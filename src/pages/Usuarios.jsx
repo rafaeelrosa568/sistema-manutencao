@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState }
+from "react";
 
-import Menu from "../components/Menu";
+import Menu
+from "../components/Menu";
 
 import {
   collection,
@@ -11,38 +13,59 @@ import {
 } from "firebase/firestore";
 
 import {
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail
 } from "firebase/auth";
 
-import { auth, db } from "../firebase";
+import {
+  auth,
+  db
+} from "../firebase";
 
 export default function Usuarios() {
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
 
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [perfil, setPerfil] = useState("motorista");
+  const [nome, setNome] =
+    useState("");
 
-  const [usuarios, setUsuarios] = useState([]);
+  const [email, setEmail] =
+    useState("");
 
-  const [modalEditar, setModalEditar] =
+  const [senha, setSenha] =
+    useState("");
+
+  const [perfil, setPerfil] =
+    useState("motorista");
+
+  const [usuarios,
+    setUsuarios] =
+    useState([]);
+
+  const [modalEditar,
+    setModalEditar] =
     useState(false);
 
-  const [editandoId, setEditandoId] =
+  const [editandoId,
+    setEditandoId] =
     useState(null);
 
   async function carregarUsuarios() {
 
     const querySnapshot =
       await getDocs(
-        collection(db, "usuarios")
+        collection(
+          db,
+          "usuarios"
+        )
       );
 
     let lista = [];
 
-    querySnapshot.forEach((docItem) => {
+    querySnapshot.forEach(
+      (docItem) => {
 
       lista.push({
         id: docItem.id,
@@ -55,7 +78,9 @@ export default function Usuarios() {
   }
 
   useEffect(() => {
+
     carregarUsuarios();
+
   }, []);
 
   function limparFormulario() {
@@ -83,17 +108,26 @@ export default function Usuarios() {
           senha
         );
 
-      const uid = response.user.uid;
+      const uid =
+        response.user.uid;
 
-      await addDoc(collection(db, "usuarios"), {
-        uid,
-        nome,
-        email,
-        perfil,
-        ativo: true
-      });
+      await addDoc(
+        collection(
+          db,
+          "usuarios"
+        ),
+        {
+          uid,
+          nome,
+          email,
+          perfil,
+          ativo: true
+        }
+      );
 
-      alert("Usuário cadastrado");
+      alert(
+        "Usuário cadastrado"
+      );
 
       limparFormulario();
 
@@ -107,13 +141,19 @@ export default function Usuarios() {
     }
   }
 
-  function abrirModalEditar(usuario) {
+  function abrirModalEditar(
+    usuario
+  ) {
 
     setNome(usuario.nome);
+
     setEmail(usuario.email);
+
     setPerfil(usuario.perfil);
 
-    setEditandoId(usuario.id);
+    setEditandoId(
+      usuario.id
+    );
 
     setModalEditar(true);
   }
@@ -131,11 +171,14 @@ export default function Usuarios() {
           editandoId
         );
 
-      await updateDoc(userRef, {
-        nome,
-        email,
-        perfil
-      });
+      await updateDoc(
+        userRef,
+        {
+          nome,
+          email,
+          perfil
+        }
+      );
 
       alert(
         "Usuário atualizado"
@@ -153,16 +196,49 @@ export default function Usuarios() {
     }
   }
 
-  async function alterarStatus(id, status) {
+  async function alterarStatus(
+    id,
+    status
+  ) {
 
     const userRef =
-      doc(db, "usuarios", id);
+      doc(
+        db,
+        "usuarios",
+        id
+      );
 
-    await updateDoc(userRef, {
-      ativo: status
-    });
+    await updateDoc(
+      userRef,
+      {
+        ativo: status
+      }
+    );
 
     carregarUsuarios();
+  }
+
+  async function redefinirSenha(
+    email
+  ) {
+
+    try {
+
+      await sendPasswordResetEmail(
+        auth,
+        email
+      );
+
+      alert(
+        "Email de redefinição enviado"
+      );
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(error.message);
+    }
   }
 
   if (
@@ -177,7 +253,11 @@ export default function Usuarios() {
         <Menu />
 
         <div className="page">
-          <h2>Sem permissão</h2>
+
+          <h2>
+            Sem permissão
+          </h2>
+
         </div>
 
       </div>
@@ -192,181 +272,184 @@ export default function Usuarios() {
 
       <div className="page">
 
-        <h1>Usuários</h1>
+        <div className="card">
 
-        <br />
+          <h1>
+            Usuários
+          </h1>
 
-        <form
-          className="form-padrao"
-          onSubmit={cadastrarUsuario}
-        >
+          <br />
 
-          <input
-            type="text"
-            placeholder="Nome"
-            value={nome}
-            onChange={(e) =>
-              setNome(e.target.value)
-            }
-            required
-          />
-
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Senha"
-            value={senha}
-            onChange={(e) =>
-              setSenha(e.target.value)
-            }
-            required
-          />
-
-          <select
-            value={perfil}
-            onChange={(e) =>
-              setPerfil(e.target.value)
+          <form
+            className="form-padrao"
+            onSubmit={
+              cadastrarUsuario
             }
           >
 
-            <option value="motorista">
-              Motorista
-            </option>
+            <input
+              type="text"
+              placeholder="Nome"
+              value={nome}
+              onChange={(e) =>
+                setNome(
+                  e.target.value
+                )
+              }
+              required
+            />
 
-            <option value="administrador">
-              Administrador
-            </option>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) =>
+                setEmail(
+                  e.target.value
+                )
+              }
+              required
+            />
 
-          </select>
+            <input
+              type="password"
+              placeholder="Senha"
+              value={senha}
+              onChange={(e) =>
+                setSenha(
+                  e.target.value
+                )
+              }
+              required
+            />
 
-          <button type="submit">
-            Cadastrar
-          </button>
+            <select
+              value={perfil}
+              onChange={(e) =>
+                setPerfil(
+                  e.target.value
+                )
+              }
+            >
 
-        </form>
+              <option value="motorista">
+                Motorista
+              </option>
+
+              <option value="administrador">
+                Administrador
+              </option>
+
+            </select>
+
+            <button type="submit">
+
+              Cadastrar
+
+            </button>
+
+          </form>
+
+        </div>
 
         <br />
-        <br />
 
-        <table className="tabela">
+        <div className="usuarios-grid">
 
-          <thead>
+          {usuarios.map(
+            (usuario) => (
 
-            <tr>
+            <div
+              className="usuario-card"
+              key={usuario.id}
+            >
 
-              <th>Nome</th>
-              <th>Email</th>
-              <th>Perfil</th>
-              <th>Status</th>
-              <th>Ações</th>
+              <h2>
+                {usuario.nome}
+              </h2>
 
-            </tr>
+              <p>
 
-          </thead>
+                <strong>
+                  Email:
+                </strong>
 
-          <tbody>
+                {" "}
 
-            {usuarios.map((usuario) => (
+                {usuario.email}
 
-              <tr key={usuario.id}>
+              </p>
 
-                <td>{usuario.nome}</td>
+              <p>
 
-                <td>{usuario.email}</td>
+                <strong>
+                  Perfil:
+                </strong>
 
-                <td>{usuario.perfil}</td>
+                {" "}
 
-                <td>
+                {usuario.perfil}
 
-                  {usuario.ativo ? (
+              </p>
 
-                    <span className="status-ativo">
-                      Ativo
-                    </span>
+              <p>
 
-                  ) : (
+                <strong>
+                  Status:
+                </strong>
 
-                    <span className="status-inativo">
-                      Inativo
-                    </span>
+                {" "}
 
-                  )}
+                {usuario.ativo
+                  ? "Ativo"
+                  : "Inativo"}
 
-                </td>
+              </p>
 
-                <td>
+              <div className="acoes-card">
 
-                  <div className="acoes">
+                <button
+                  onClick={() =>
+                    abrirModalEditar(
+                      usuario
+                    )
+                  }
+                >
+                  Editar
+                </button>
 
-                    <button
-                      onClick={() =>
-                        abrirModalEditar(
-                          usuario
-                        )
-                      }
-                    >
-                      Editar
-                    </button>
+                <button
+                  onClick={() =>
+                    redefinirSenha(
+                      usuario.email
+                    )
+                  }
+                >
+                  Reset Senha
+                </button>
 
-                    <button
-  className="btn-reset-user"
-  onClick={() =>
-    redefinirSenha(
-      usuario.email
-    )
-  }
->
-  Reset Senha
-</button>
+                <button
+                  onClick={() =>
+                    alterarStatus(
+                      usuario.id,
+                      !usuario.ativo
+                    )
+                  }
+                >
 
-                    {usuario.ativo ? (
+                  {usuario.ativo
+                    ? "Inativar"
+                    : "Ativar"}
 
-                      <button
-                        onClick={() =>
-                          alterarStatus(
-                            usuario.id,
-                            false
-                          )
-                        }
-                      >
-                        Inativar
-                      </button>
+                </button>
 
-                    ) : (
+              </div>
 
-                      <button
-                        onClick={() =>
-                          alterarStatus(
-                            usuario.id,
-                            true
-                          )
-                        }
-                      >
-                        Ativar
-                      </button>
+            </div>
 
-                    )}
+          ))}
 
-                  </div>
-
-                </td>
-
-              </tr>
-
-            ))}
-
-          </tbody>
-
-        </table>
+        </div>
 
       </div>
 
@@ -376,11 +459,17 @@ export default function Usuarios() {
 
           <div className="modal">
 
-            <h2>Editar Usuário</h2>
+            <h2>
+              Editar Usuário
+            </h2>
 
             <br />
 
-            <form onSubmit={salvarEdicao}>
+            <form
+              onSubmit={
+                salvarEdicao
+              }
+            >
 
               <input
                 type="text"
