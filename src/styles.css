@@ -459,3 +459,146 @@ BOTÃO OBSERVAÇÕES
 
   border:1px solid #ffeeba;
 }
+
+/*==================================
+TEMA CLARO E ESCURO - TELA LOGIN AJUSTADA
+========================================*/
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:#f4f6f9;
+}
+
+body.dark{
+  background:#121212;
+  color:white;
+}
+
+.login-page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    linear-gradient(
+      135deg,
+      #1e3c72,
+      #2a5298
+    );
+  padding:20px;
+}
+
+.login-box{
+  width:100%;
+  max-width:420px;
+  background:white;
+  padding:40px;
+  border-radius:20px;
+  box-shadow:
+    0 10px 40px rgba(
+      0,0,0,0.2
+    );
+}
+
+body.dark .login-box{
+  background:#1f1f1f;
+}
+
+.login-header{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.login-header h1{
+  margin:0;
+  font-size:32px;
+  color:#1e3c72;
+}
+
+body.dark .login-header h1{
+  color:white;
+}
+
+.login-header p{
+  margin-top:10px;
+  color:#666;
+}
+
+body.dark .login-header p{
+  color:#ccc;
+}
+
+.login-box form{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+.login-box input{
+  padding:15px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  font-size:16px;
+}
+
+body.dark .login-box input{
+  background:#2a2a2a;
+  color:white;
+  border:1px solid #444;
+}
+
+.btn-login{
+  background:#1e3c72;
+  color:white;
+  border:none;
+  padding:15px;
+  border-radius:10px;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.btn-login:hover{
+  opacity:0.9;
+}
+
+.btn-reset{
+  background:none;
+  border:none;
+  color:#1e3c72;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.theme-button{
+  position:absolute;
+  top:20px;
+  right:20px;
+}
+
+.theme-button button{
+  border:none;
+  padding:10px 15px;
+  border-radius:10px;
+  cursor:pointer;
+  background:white;
+  font-weight:bold;
+}
+
+body.dark .theme-button button{
+  background:#1f1f1f;
+  color:white;
+}
+
+@media(max-width:600px){
+
+  .login-box{
+    padding:25px;
+  }
+
+  .login-header h1{
+    font-size:26px;
+  }
+
+}
