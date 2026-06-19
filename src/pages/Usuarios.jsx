@@ -400,9 +400,23 @@ export default function Usuarios() {
 
                 {" "}
 
-                {usuario.ativo
-                  ? "Ativo"
-                  : "Inativo"}
+                {usuario.ativo ? (
+
+<span className="status-ativo">
+
+Ativo
+
+</span>
+
+) : (
+
+<span className="status-inativo">
+
+Inativo
+
+</span>
+
+)}
 
               </p>
 
