@@ -217,6 +217,7 @@ export default function Manutencoes() {
 
   function calcularStatus(manutencao) {
 
+    // ENCERRADA
     if (
       manutencao.status ===
       "encerrada"
@@ -225,6 +226,18 @@ export default function Manutencoes() {
       return {
         cor: "#777",
         texto: "⚫ Encerrada"
+      };
+    }
+
+    // HISTÓRICO
+    if (
+      manutencao.status ===
+      "historico"
+    ) {
+
+      return {
+        cor: "#2196f3",
+        texto: "📁 Histórico"
       };
     }
 
@@ -572,8 +585,7 @@ export default function Manutencoes() {
 
                   <div>
 
-                    {manutencao.status ===
-                    "ativa" ? (
+                    {manutencao.status === "ativa" && (
 
                       <span className="status-ativo">
 
@@ -581,11 +593,23 @@ export default function Manutencoes() {
 
                       </span>
 
-                    ) : (
+                    )}
+
+                    {manutencao.status === "encerrada" && (
 
                       <span className="status-finalizada">
 
                         Encerrada
+
+                      </span>
+
+                    )}
+
+                    {manutencao.status === "historico" && (
+
+                      <span className="status-historico">
+
+                        Histórico
 
                       </span>
 
@@ -676,8 +700,8 @@ export default function Manutencoes() {
                     {user.perfil ===
                       "administrador" &&
 
-                      manutencao.status ===
-                        "ativa" && (
+                      manutencao.status !==
+                        "encerrada" && (
 
                         <button
                           onClick={() =>
