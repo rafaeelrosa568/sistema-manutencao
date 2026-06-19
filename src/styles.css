@@ -1,0 +1,461 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial;
+}
+
+body{
+  background:#f5f5f5;
+}
+
+button{
+  cursor:pointer;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin-bottom:10px;
+}
+
+button{
+  padding:12px;
+  border:none;
+  background:#1976d2;
+  color:white;
+}
+
+.login-container{
+  width:100%;
+  height:100vh;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.login-form{
+  width:400px;
+  background:white;
+  padding:30px;
+  border-radius:10px;
+}
+
+.login-form h1{
+  margin-bottom:20px;
+}
+
+.menu{
+  width:100%;
+  background:#1976d2;
+  color:white;
+
+  padding:20px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.menu-links{
+  display:flex;
+  gap:10px;
+}
+
+.menu button{
+  background:white;
+  color:#1976d2;
+}
+
+.page{
+  padding:20px;
+}
+
+.form-padrao{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+}
+
+.form-padrao select{
+  width:100%;
+  padding:12px;
+  margin-bottom:10px;
+}
+
+.tabela{
+  width:100%;
+  background:white;
+  border-collapse:collapse;
+}
+
+.tabela th,
+.tabela td{
+  border:1px solid #ddd;
+  padding:10px;
+  text-align:left;
+}
+
+.tabela th{
+  background:#1976d2;
+  color:white;
+}
+
+/* ===============================
+CORES NOS STATUSO ATIVO/DESATIVADO
+==================================*/
+
+.status-ativo {
+  color: green;
+  font-weight: bold;
+}
+
+.status-inativo {
+  color: red;
+  font-weight: bold;
+}
+
+/*===============================
+    Modal ações botoes
+=================================*/
+.acoes{
+  display:flex;
+  gap:10px;
+}
+
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+
+  width:100%;
+  height:100vh;
+
+  background:rgba(0,0,0,0.5);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal{
+  width:400px;
+  background:white;
+  padding:30px;
+  border-radius:10px;
+}
+
+.modal-buttons{
+  display:flex;
+  gap:10px;
+}
+
+/*========================
+BOTÃO RESETE DE SENHA
+==========================*/
+
+.btn-reset{
+  margin-top:10px;
+  width:100%;
+  background:#555;
+}
+
+.btn-reset-user{
+  background:#ff9800;
+}
+
+.modal{
+  animation:modalShow 0.2s;
+}
+
+@keyframes modalShow{
+  from{
+    opacity:0;
+    transform:translateY(-20px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/*===============================
+BOTÃO OBSERVAÇÕES 
+================================*/
+
+.box-observacao{
+
+  background:#f5f5f5;
+
+  padding:15px;
+
+  border-radius:8px;
+
+  min-height:80px;
+
+  white-space:pre-wrap;
+}
+
+
+/* ===== TABELAS ===== */
+
+.tabela{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+  background:white;
+
+  border-radius:10px;
+
+  overflow:hidden;
+}
+
+.tabela th{
+
+  background:#1976d2;
+
+  color:white;
+
+  padding:12px;
+
+  text-align:left;
+
+  font-size:14px;
+}
+
+.tabela td{
+
+  padding:10px;
+
+  border-bottom:1px solid #eee;
+
+  font-size:14px;
+}
+
+/* ===== INPUTS TABELA ===== */
+
+.tabela input{
+
+  width:120px;
+
+  padding:8px;
+
+  border:1px solid #ccc;
+
+  border-radius:6px;
+}
+
+/* ===== BOTÕES ===== */
+
+.tabela button{
+
+  padding:8px 12px;
+
+  border:none;
+
+  border-radius:6px;
+
+  cursor:pointer;
+
+  margin:2px;
+
+  font-size:13px;
+}
+
+/* ===== STATUS ===== */
+
+.status-ativo{
+
+  color:green;
+
+  font-weight:bold;
+}
+
+.status-inativo{
+
+  color:red;
+
+  font-weight:bold;
+}
+
+/* ===== MODAL ===== */
+
+.modal-overlay{
+
+  position:fixed;
+
+  top:0;
+
+  left:0;
+
+  width:100%;
+
+  height:100%;
+
+  background:rgba(0,0,0,0.5);
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  z-index:999;
+}
+
+.modal{
+
+  background:white;
+
+  padding:25px;
+
+  border-radius:12px;
+
+  width:90%;
+
+  max-width:500px;
+
+  max-height:90vh;
+
+  overflow:auto;
+}
+
+.modal input,
+.modal textarea{
+
+  width:100%;
+
+  padding:10px;
+
+  border:1px solid #ccc;
+
+  border-radius:8px;
+}
+
+.modal button{
+
+  padding:10px 15px;
+
+  border:none;
+
+  border-radius:6px;
+
+  cursor:pointer;
+
+  margin:5px;
+}
+
+/* ===== OBSERVAÇÃO ===== */
+
+.box-observacao{
+
+  background:#f5f5f5;
+
+  padding:15px;
+
+  border-radius:8px;
+
+  min-height:80px;
+
+  white-space:pre-wrap;
+}
+
+/* ===== RESPONSIVO ===== */
+
+@media (max-width:900px){
+
+  .tabela{
+
+    display:block;
+
+    overflow-x:auto;
+
+    white-space:nowrap;
+  }
+
+  .page{
+
+    padding:10px;
+  }
+
+  .tabela button{
+
+    font-size:12px;
+
+    padding:6px 10px;
+  }
+
+  .tabela input{
+
+    width:90px;
+  }
+}
+
+/* ===== DASHBOARD ===== */
+
+.cards-dashboard{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+
+  gap:20px;
+}
+
+.card-dashboard{
+
+  background:white;
+
+  border-radius:12px;
+
+  padding:25px;
+
+  box-shadow:
+    0 2px 10px rgba(0,0,0,0.08);
+
+  text-align:center;
+}
+
+.card-dashboard h3{
+
+  color:#666;
+
+  margin-bottom:10px;
+}
+
+.card-dashboard h1{
+
+  color:#1976d2;
+
+  font-size:40px;
+}
+
+.box-alertas{
+
+  background:white;
+
+  padding:20px;
+
+  border-radius:12px;
+
+  box-shadow:
+    0 2px 10px rgba(0,0,0,0.08);
+}
+
+.alerta-item{
+
+  background:#fff3cd;
+
+  padding:15px;
+
+  border-radius:8px;
+
+  margin-bottom:10px;
+
+  border:1px solid #ffeeba;
+}
