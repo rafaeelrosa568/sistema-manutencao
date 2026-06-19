@@ -1,46 +1,69 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState }
+from "react";
 
 import {
   collection,
   getDocs
 } from "firebase/firestore";
 
-import { db } from "../firebase";
+import { db }
+from "../firebase";
 
-import Menu from "../components/Menu";
+import Menu
+from "../components/Menu";
 
 export default function Dashboard() {
 
-  const [veiculos, setVeiculos] =
+  const [usuarios,
+    setUsuarios] =
     useState([]);
 
-  const [manutencoes, setManutencoes] =
+  const [veiculos,
+    setVeiculos] =
     useState([]);
 
-  const [alertas, setAlertas] =
+  const [manutencoes,
+    setManutencoes] =
     useState([]);
-
-  useEffect(() => {
-
-    carregarDados();
-
-  }, []);
 
   async function carregarDados() {
 
+    const usuariosSnap =
+      await getDocs(
+        collection(
+          db,
+          "usuarios"
+        )
+      );
+
     const veiculosSnap =
       await getDocs(
-        collection(db, "veiculos")
+        collection(
+          db,
+          "veiculos"
+        )
       );
 
     const manutencoesSnap =
       await getDocs(
-        collection(db, "manutencoes")
+        collection(
+          db,
+          "manutencoes"
+        )
       );
 
+    let listaUsuarios = [];
     let listaVeiculos = [];
-
     let listaManutencoes = [];
+
+    usuariosSnap.forEach((doc) => {
+
+      listaUsuarios.push({
+        id: doc.id,
+        ...doc.data()
+      });
+
+    });
 
     veiculosSnap.forEach((doc) => {
 
@@ -60,69 +83,34 @@ export default function Dashboard() {
 
     });
 
+    setUsuarios(listaUsuarios);
+
     setVeiculos(listaVeiculos);
 
-    setManutencoes(listaManutencoes);
-
-    gerarAlertas(
-      listaVeiculos,
+    setManutencoes(
       listaManutencoes
     );
   }
 
-  function gerarAlertas(
-    listaVeiculos,
-    listaManutencoes
-  ) {
+  useEffect(() => {
 
-    let lista = [];
+    carregarDados();
 
-    listaManutencoes.forEach(
-      (manutencao) => {
+  }, []);
 
-        if (
-          manutencao.status ===
-          "encerrada"
-        ) return;
-
-        const veiculo =
-          listaVeiculos.find(
-            (v) =>
-              v.id ===
-              manutencao.veiculoId
-          );
-
-        const proximaTroca =
-          manutencao.kmAtual +
-          manutencao.intervaloKm;
-
-        const restante =
-          proximaTroca -
-          manutencao.kmAtual;
-
-        if (restante <= 1000) {
-
-          lista.push({
-
-            id: manutencao.id,
-
-            texto:
-              `${manutencao.tipo} do veículo ${veiculo?.marca} ${veiculo?.modelo} está próxima do vencimento`
-
-          });
-        }
-      }
+  const manutencoesAtivas =
+    manutencoes.filter(
+      (m) =>
+        m.status !==
+        "encerrada"
     );
 
-    setAlertas(lista);
-  }
-
-  const vencidas =
+  const manutencoesFinalizadas =
     manutencoes.filter(
       (m) =>
         m.status ===
         "encerrada"
-    ).length;
+    );
 
   return (
 
@@ -138,58 +126,56 @@ export default function Dashboard() {
 
         <br />
 
-        <div className="cards-dashboard">
+        <div className="dashboard-grid">
 
-          <div className="card-dashboard">
+          <div className="dashboard-card">
 
-            <h3>
+            <h2>
+              Usuários
+            </h2>
+
+            <h1>
+              {usuarios.length}
+            </h1>
+
+          </div>
+
+          <div className="dashboard-card">
+
+            <h2>
               Veículos
-            </h3>
+            </h2>
+
+            <h1>
+              {veiculos.length}
+            </h1>
+
+          </div>
+
+          <div className="dashboard-card">
+
+            <h2>
+              Manutenções Ativas
+            </h2>
 
             <h1>
               {
-                veiculos.length
+                manutencoesAtivas.length
               }
             </h1>
 
           </div>
 
-          <div className="card-dashboard">
+          <div className="dashboard-card">
 
-            <h3>
-              Manutenções
-            </h3>
-
-            <h1>
-              {
-                manutencoes.length
-              }
-            </h1>
-
-          </div>
-
-          <div className="card-dashboard">
-
-            <h3>
-              Alertas
-            </h3>
+            <h2>
+              Finalizadas
+            </h2>
 
             <h1>
               {
-                alertas.length
+                manutencoesFinalizadas.length
               }
-            </h1>
-
-          </div>
-
-          <div className="card-dashboard">
-
-            <h3>
-              Encerradas
-            </h3>
-
-            <h1>
-              {vencidas}
             </h1>
 
           </div>
@@ -197,37 +183,52 @@ export default function Dashboard() {
         </div>
 
         <br />
-        <br />
 
-        <div className="box-alertas">
+        <div className="card">
 
           <h2>
-            Próximas do vencimento
+            Próximas Manutenções
           </h2>
 
           <br />
 
-          {alertas.length === 0 && (
+          {manutencoesAtivas.length ===
+          0 ? (
 
             <p>
-              Nenhum alerta
+              Nenhuma manutenção
             </p>
 
-          )}
+          ) : (
 
-          {alertas.map(
-            (alerta) => (
+            <div className="dashboard-alertas">
 
-              <div
-                key={alerta.id}
-                className="alerta-item"
-              >
+              {manutencoesAtivas.map(
+                (item) => (
 
-                ⚠ {alerta.texto}
+                <div
+                  className="alerta-item"
+                  key={item.id}
+                >
 
-              </div>
+                  <strong>
+                    {item.tipo}
+                  </strong>
 
-            )
+                  <br />
+
+                  KM Troca:
+                  {" "}
+
+                  {item.kmAtual +
+                    item.intervaloKm}
+
+                </div>
+
+              ))}
+
+            </div>
+
           )}
 
         </div>
