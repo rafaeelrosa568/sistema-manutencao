@@ -1,16 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState }
+from "react";
 
 import Menu from "../components/Menu";
 
 import {
   collection,
-  addDoc,
+ addDoc,
   getDocs,
   updateDoc,
   doc
 } from "firebase/firestore";
 
-import { db } from "../firebase";
+import { db }
+from "../firebase";
 
 export default function Manutencoes() {
 
@@ -18,22 +20,28 @@ export default function Manutencoes() {
     localStorage.getItem("user")
   );
 
-  const [veiculos, setVeiculos] =
+  const [veiculos,
+    setVeiculos] =
     useState([]);
 
-  const [veiculoId, setVeiculoId] =
+  const [veiculoId,
+    setVeiculoId] =
     useState("");
 
-  const [tipo, setTipo] =
+  const [tipo,
+    setTipo] =
     useState("");
 
-  const [data, setData] =
+  const [data,
+    setData] =
     useState("");
 
-  const [kmAtual, setKmAtual] =
+  const [kmAtual,
+    setKmAtual] =
     useState("");
 
-  const [intervaloKm, setIntervaloKm] =
+  const [intervaloKm,
+    setIntervaloKm] =
     useState("");
 
   const [
@@ -41,7 +49,8 @@ export default function Manutencoes() {
     setIntervaloMeses
   ] = useState("");
 
-  const [observacao, setObservacao] =
+  const [observacao,
+    setObservacao] =
     useState("");
 
   const [
@@ -49,61 +58,33 @@ export default function Manutencoes() {
     setManutencoes
   ] = useState([]);
 
-  const [
-    kmAtualVeiculo,
-    setKmAtualVeiculo
-  ] = useState({});
+  const [kmAtualVeiculo,
+    setKmAtualVeiculo] =
+    useState({});
 
-  const [
-    modalDetalhes,
-    setModalDetalhes
-  ] = useState(false);
+  const [modalVisualizar,
+    setModalVisualizar] =
+    useState(false);
 
   const [
     manutencaoSelecionada,
     setManutencaoSelecionada
   ] = useState(null);
 
-  const [modalEditar, setModalEditar] =
-    useState(false);
-
-  const [editandoId, setEditandoId] =
-    useState("");
-
-  const [editarTipo, setEditarTipo] =
-    useState("");
-
-  const [editarData, setEditarData] =
-    useState("");
-
-  const [editarKm, setEditarKm] =
-    useState("");
-
-  const [
-    editarIntervaloKm,
-    setEditarIntervaloKm
-  ] = useState("");
-
-  const [
-    editarIntervaloMeses,
-    setEditarIntervaloMeses
-  ] = useState("");
-
-  const [
-    editarObservacao,
-    setEditarObservacao
-  ] = useState("");
-
   async function carregarVeiculos() {
 
     const querySnapshot =
       await getDocs(
-        collection(db, "veiculos")
+        collection(
+          db,
+          "veiculos"
+        )
       );
 
     let lista = [];
 
-    querySnapshot.forEach((docItem) => {
+    querySnapshot.forEach(
+      (docItem) => {
 
       lista.push({
         id: docItem.id,
@@ -119,12 +100,16 @@ export default function Manutencoes() {
 
     const querySnapshot =
       await getDocs(
-        collection(db, "manutencoes")
+        collection(
+          db,
+          "manutencoes"
+        )
       );
 
     let lista = [];
 
-    querySnapshot.forEach((docItem) => {
+    querySnapshot.forEach(
+      (docItem) => {
 
       lista.push({
         id: docItem.id,
@@ -159,20 +144,15 @@ export default function Manutencoes() {
           veiculoId,
           tipo,
           data,
-
           kmAtual:
             Number(kmAtual),
-
           intervaloKm:
             Number(intervaloKm),
-
           intervaloMeses:
             Number(
               intervaloMeses
             ),
-
           observacao,
-
           status: "ativa"
         }
       );
@@ -231,102 +211,6 @@ export default function Manutencoes() {
     }
   }
 
-  function abrirDetalhes(manutencao) {
-
-    setManutencaoSelecionada(
-      manutencao
-    );
-
-    setModalDetalhes(true);
-  }
-
-  function abrirEditar(manutencao) {
-
-    setEditandoId(
-      manutencao.id
-    );
-
-    setEditarTipo(
-      manutencao.tipo
-    );
-
-    setEditarData(
-      manutencao.data
-    );
-
-    setEditarKm(
-      manutencao.kmAtual
-    );
-
-    setEditarIntervaloKm(
-      manutencao.intervaloKm
-    );
-
-    setEditarIntervaloMeses(
-      manutencao.intervaloMeses
-    );
-
-    setEditarObservacao(
-      manutencao.observacao || ""
-    );
-
-    setModalEditar(true);
-  }
-
-  async function salvarEdicao() {
-
-    try {
-
-      const manutencaoRef =
-        doc(
-          db,
-          "manutencoes",
-          editandoId
-        );
-
-      await updateDoc(
-        manutencaoRef,
-        {
-          tipo: editarTipo,
-
-          data: editarData,
-
-          kmAtual:
-            Number(
-              editarKm
-            ),
-
-          intervaloKm:
-            Number(
-              editarIntervaloKm
-            ),
-
-          intervaloMeses:
-            Number(
-              editarIntervaloMeses
-            ),
-
-          observacao:
-            editarObservacao
-        }
-      );
-
-      alert(
-        "Manutenção atualizada"
-      );
-
-      setModalEditar(false);
-
-      carregarManutencoes();
-
-    } catch (error) {
-
-      console.log(error);
-
-      alert(error.message);
-    }
-  }
-
   function obterVeiculo(id) {
 
     return veiculos.find(
@@ -334,7 +218,9 @@ export default function Manutencoes() {
     );
   }
 
-  function calcularStatus(manutencao) {
+  function calcularStatus(
+    manutencao
+  ) {
 
     if (
       manutencao.status ===
@@ -342,8 +228,9 @@ export default function Manutencoes() {
     ) {
 
       return {
-        cor: "#999",
-        texto: "Finalizada"
+        cor: "#777",
+        texto:
+          "Finalizada"
       };
     }
 
@@ -365,7 +252,6 @@ export default function Manutencoes() {
 
       return {
         cor: "red",
-
         texto:
           `🔴 Vencido (${Math.abs(
             restante
@@ -377,71 +263,27 @@ export default function Manutencoes() {
 
       return {
         cor: "#ff9800",
-
         texto:
           `🟡 Faltam ${restante} KM`
       };
     }
 
     return {
-
       cor: "green",
-
       texto:
         `🟢 OK (${restante} KM restantes)`
     };
   }
 
-  function imprimirDetalhes() {
+  function abrirVisualizacao(
+    manutencao
+  ) {
 
-    window.print();
-  }
-
-  function enviarWhatsApp() {
-
-    const texto = `
-Manutenção Veículo
-
-Tipo:
-${manutencaoSelecionada.tipo}
-
-Data:
-${manutencaoSelecionada.data}
-
-KM:
-${manutencaoSelecionada.kmAtual}
-
-Observação:
-${manutencaoSelecionada.observacao}
-`;
-
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(texto)}`,
-      "_blank"
+    setManutencaoSelecionada(
+      manutencao
     );
-  }
 
-  function enviarEmail() {
-
-    const assunto =
-      "Detalhes da manutenção";
-
-    const corpo = `
-Tipo:
-${manutencaoSelecionada.tipo}
-
-Data:
-${manutencaoSelecionada.data}
-
-KM:
-${manutencaoSelecionada.kmAtual}
-
-Observação:
-${manutencaoSelecionada.observacao}
-`;
-
-    window.location.href =
-      `mailto:?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+    setModalVisualizar(true);
   }
 
   return (
@@ -452,36 +294,40 @@ ${manutencaoSelecionada.observacao}
 
       <div className="page">
 
-        <h1>Manutenções</h1>
-
-        <br />
-
         {user.perfil ===
           "administrador" && (
 
-          <form
-            className="form-padrao"
-            onSubmit={
-              cadastrarManutencao
-            }
-          >
+          <div className="card">
 
-            <select
-              value={veiculoId}
-              onChange={(e) =>
-                setVeiculoId(
-                  e.target.value
-                )
+            <h1>
+              Manutenções
+            </h1>
+
+            <br />
+
+            <form
+              className="form-padrao"
+              onSubmit={
+                cadastrarManutencao
               }
-              required
             >
 
-              <option value="">
-                Selecione Veículo
-              </option>
+              <select
+                value={veiculoId}
+                onChange={(e) =>
+                  setVeiculoId(
+                    e.target.value
+                  )
+                }
+                required
+              >
 
-              {veiculos.map(
-                (veiculo) => (
+                <option value="">
+                  Selecione Veículo
+                </option>
+
+                {veiculos.map(
+                  (veiculo) => (
 
                   <option
                     key={veiculo.id}
@@ -491,551 +337,311 @@ ${manutencaoSelecionada.observacao}
                     {veiculo.marca}
                     {" - "}
                     {veiculo.modelo}
-                    {" - "}
-                    {veiculo.placa}
 
                   </option>
 
-                )
-              )}
+                ))}
 
-            </select>
+              </select>
 
-            <input
-              type="text"
-              placeholder="Tipo da manutenção"
-              value={tipo}
-              onChange={(e) =>
-                setTipo(
-                  e.target.value
-                )
-              }
-              required
-            />
+              <input
+                type="text"
+                placeholder="Tipo"
+                value={tipo}
+                onChange={(e) =>
+                  setTipo(
+                    e.target.value
+                  )
+                }
+                required
+              />
 
-            <input
-              type="date"
-              value={data}
-              onChange={(e) =>
-                setData(
-                  e.target.value
-                )
-              }
-              required
-            />
+              <input
+                type="date"
+                value={data}
+                onChange={(e) =>
+                  setData(
+                    e.target.value
+                  )
+                }
+                required
+              />
 
-            <input
-              type="number"
-              placeholder="KM da manutenção"
-              value={kmAtual}
-              onChange={(e) =>
-                setKmAtual(
-                  e.target.value
-                )
-              }
-              required
-            />
+              <input
+                type="number"
+                placeholder="KM"
+                value={kmAtual}
+                onChange={(e) =>
+                  setKmAtual(
+                    e.target.value
+                  )
+                }
+                required
+              />
 
-            <input
-              type="number"
-              placeholder="Intervalo KM"
-              value={intervaloKm}
-              onChange={(e) =>
-                setIntervaloKm(
-                  e.target.value
-                )
-              }
-              required
-            />
+              <input
+                type="number"
+                placeholder="Intervalo KM"
+                value={intervaloKm}
+                onChange={(e) =>
+                  setIntervaloKm(
+                    e.target.value
+                  )
+                }
+                required
+              />
 
-            <input
-              type="number"
-              placeholder="Intervalo Meses"
-              value={
-                intervaloMeses
-              }
-              onChange={(e) =>
-                setIntervaloMeses(
-                  e.target.value
-                )
-              }
-              required
-            />
+              <input
+                type="number"
+                placeholder="Intervalo Meses"
+                value={
+                  intervaloMeses
+                }
+                onChange={(e) =>
+                  setIntervaloMeses(
+                    e.target.value
+                  )
+                }
+                required
+              />
 
-            <input
-              type="text"
-              placeholder="Observação"
-              value={observacao}
-              onChange={(e) =>
-                setObservacao(
-                  e.target.value
-                )
-              }
-            />
+              <input
+                type="text"
+                placeholder="Observação"
+                value={observacao}
+                onChange={(e) =>
+                  setObservacao(
+                    e.target.value
+                  )
+                }
+              />
 
-            <button type="submit">
-              Cadastrar
-            </button>
+              <button type="submit">
 
-          </form>
+                Cadastrar
+
+              </button>
+
+            </form>
+
+          </div>
 
         )}
 
         <br />
-        <br />
 
-        <table className="tabela">
+        <div className="manutencoes-grid">
 
-          <thead>
+          {manutencoes.map(
+            (manutencao) => {
 
-            <tr>
+            const veiculo =
+              obterVeiculo(
+                manutencao.veiculoId
+              );
 
-              <th>Veículo</th>
-              <th>Manutenção</th>
-              <th>Data</th>
-              <th>KM</th>
-              <th>KM Atual</th>
-              <th>Próxima Troca</th>
-              <th>Situação</th>
-              <th>Status</th>
-              <th>Detalhes</th>
+            return (
 
-              {user.perfil ===
-                "administrador" && (
-                <th>Ações</th>
-              )}
+              <div
+                className="manutencao-card"
+                key={manutencao.id}
+              >
 
-            </tr>
+                <h2>
 
-          </thead>
+                  {veiculo?.marca}
+                  {" "}
+                  {veiculo?.modelo}
 
-          <tbody>
+                </h2>
 
-            {manutencoes.map(
-              (manutencao) => {
+                <p>
 
-                const veiculo =
-                  obterVeiculo(
-                    manutencao.veiculoId
-                  );
+                  <strong>
+                    Tipo:
+                  </strong>
 
-                return (
+                  {" "}
+                  {manutencao.tipo}
 
-                  <tr
-                    key={manutencao.id}
+                </p>
+
+                <p>
+
+                  <strong>
+                    Data:
+                  </strong>
+
+                  {" "}
+                  {manutencao.data}
+
+                </p>
+
+                <p>
+
+                  <strong>
+                    Próxima troca:
+                  </strong>
+
+                  {" "}
+
+                  {manutencao.kmAtual +
+                    manutencao.intervaloKm}
+
+                  {" KM"}
+
+                </p>
+
+                <input
+                  type="number"
+                  placeholder="KM Atual"
+                  value={
+                    kmAtualVeiculo[
+                      manutencao.veiculoId
+                    ] || ""
+                  }
+                  onChange={(e) =>
+                    setKmAtualVeiculo({
+                      ...kmAtualVeiculo,
+
+                      [manutencao.veiculoId]:
+                        e.target.value
+                    })
+                  }
+                />
+
+                <div
+                  style={{
+                    marginTop: 10,
+                    color:
+                      calcularStatus(
+                        manutencao
+                      ).cor,
+                    fontWeight:
+                      "bold"
+                  }}
+                >
+
+                  {
+                    calcularStatus(
+                      manutencao
+                    ).texto
+                  }
+
+                </div>
+
+                <div className="acoes-card">
+
+                  <button
+                    onClick={() =>
+                      abrirVisualizacao(
+                        manutencao
+                      )
+                    }
                   >
+                    Ver
+                  </button>
 
-                    <td>
-                      {veiculo?.marca}
-                      {" "}
-                      {veiculo?.modelo}
-                    </td>
+                  {user.perfil ===
+                    "administrador" &&
 
-                    <td>
-                      {manutencao.tipo}
-                    </td>
+                    (
+                      manutencao.status ===
+                        "ativa"
 
-                    <td>
-                      {manutencao.data}
-                    </td>
+                      ||
 
-                    <td>
-                      {manutencao.kmAtual}
-                    </td>
+                      !manutencao.status
+                    ) && (
 
-                    <td>
+                    <button
+                      onClick={() =>
+                        finalizarManutencao(
+                          manutencao.id
+                        )
+                      }
+                    >
+                      Finalizar
+                    </button>
 
-                      <input
-                        type="number"
-                        placeholder="KM Atual"
-                        value={
-                          kmAtualVeiculo[
-                            manutencao.veiculoId
-                          ] || ""
-                        }
-                        onChange={(e) =>
-                          setKmAtualVeiculo({
+                  )}
 
-                            ...kmAtualVeiculo,
+                </div>
 
-                            [manutencao.veiculoId]:
-                              e.target.value
-                          })
-                        }
-                      />
+              </div>
 
-                    </td>
-
-                    <td>
-
-                      {manutencao.kmAtual +
-                        manutencao.intervaloKm}
-                      {" KM"}
-
-                    </td>
-
-                    <td>
-
-                      {(
-                        manutencao.status ===
-                        "ativa" ||
-
-                        !manutencao.status
-                      ) ? (
-
-                        <span
-                          className="status-ativo"
-                        >
-                          Ativa
-                        </span>
-
-                      ) : (
-
-                        <span
-                          className="status-inativo"
-                        >
-                          Encerrada
-                        </span>
-
-                      )}
-
-                    </td>
-
-                    <td>
-
-                      <span
-                        style={{
-                          color:
-                            calcularStatus(
-                              manutencao
-                            ).cor,
-
-                          fontWeight:
-                            "bold"
-                        }}
-                      >
-
-                        {
-                          calcularStatus(
-                            manutencao
-                          ).texto
-                        }
-
-                      </span>
-
-                    </td>
-
-                    <td>
-
-                      <button
-                        onClick={() =>
-                          abrirDetalhes(
-                            manutencao
-                          )
-                        }
-                      >
-                        Ver
-                      </button>
-
-                    </td>
-
-                    {user.perfil ===
-                      "administrador" && (
-
-                      <td>
-
-                        <button
-                          onClick={() =>
-                            abrirEditar(
-                              manutencao
-                            )
-                          }
-                        >
-                          Editar
-                        </button>
-
-                        {" "}
-
-                        {(manutencao.status ===
-                          "ativa" ||
-
-                          !manutencao.status) && (
-
-                          <button
-                            onClick={() =>
-                              finalizarManutencao(
-                                manutencao.id
-                              )
-                            }
-                          >
-                            Finalizar
-                          </button>
-
-                        )}
-
-                      </td>
-
-                    )}
-
-                  </tr>
-
-                );
-              }
-            )}
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-      {modalDetalhes &&
-      manutencaoSelecionada && (
-
-        <div className="modal-overlay">
-
-          <div className="modal">
-
-            <h2>
-              Detalhes Manutenção
-            </h2>
-
-            <br />
-
-            <p>
-              <strong>Tipo:</strong>
-              {" "}
-              {
-                manutencaoSelecionada.tipo
-              }
-            </p>
-
-            <br />
-
-            <p>
-              <strong>Data:</strong>
-              {" "}
-              {
-                manutencaoSelecionada.data
-              }
-            </p>
-
-            <br />
-
-            <p>
-              <strong>KM:</strong>
-              {" "}
-              {
-                manutencaoSelecionada.kmAtual
-              }
-            </p>
-
-            <br />
-
-            <p>
-              <strong>
-                Intervalo KM:
-              </strong>
-              {" "}
-              {
-                manutencaoSelecionada.intervaloKm
-              }
-            </p>
-
-            <br />
-
-            <p>
-              <strong>
-                Intervalo Meses:
-              </strong>
-              {" "}
-              {
-                manutencaoSelecionada.intervaloMeses
-              }
-            </p>
-
-            <br />
-
-            <p>
-              <strong>
-                Observação:
-              </strong>
-            </p>
-
-            <br />
-
-            <div className="box-observacao">
-
-              {
-                manutencaoSelecionada.observacao ||
-                "Sem observações"
-              }
-
-            </div>
-
-            <br />
-
-            <button
-              onClick={
-                imprimirDetalhes
-              }
-            >
-              Imprimir
-            </button>
-
-            {" "}
-
-            <button
-              onClick={
-                enviarWhatsApp
-              }
-            >
-              WhatsApp
-            </button>
-
-            {" "}
-
-            <button
-              onClick={
-                enviarEmail
-              }
-            >
-              Email
-            </button>
-
-            {" "}
-
-            <button
-              onClick={() =>
-                setModalDetalhes(false)
-              }
-            >
-              Fechar
-            </button>
-
-          </div>
+            );
+          })}
 
         </div>
 
-      )}
+      </div>
 
-      {modalEditar && (
+      {modalVisualizar && (
 
         <div className="modal-overlay">
 
           <div className="modal">
 
             <h2>
-              Editar Manutenção
+              Detalhes
             </h2>
 
             <br />
 
-            <input
-              type="text"
-              placeholder="Tipo"
-              value={editarTipo}
-              onChange={(e) =>
-                setEditarTipo(
-                  e.target.value
-                )
+            <p>
+
+              <strong>
+                Tipo:
+              </strong>
+
+              {" "}
+
+              {
+                manutencaoSelecionada?.tipo
               }
-            />
+
+            </p>
 
             <br />
-            <br />
 
-            <input
-              type="date"
-              value={editarData}
-              onChange={(e) =>
-                setEditarData(
-                  e.target.value
-                )
+            <p>
+
+              <strong>
+                Observação:
+              </strong>
+
+              {" "}
+
+              {
+                manutencaoSelecionada?.observacao
               }
-            />
+
+            </p>
 
             <br />
-            <br />
 
-            <input
-              type="number"
-              placeholder="KM"
-              value={editarKm}
-              onChange={(e) =>
-                setEditarKm(
-                  e.target.value
-                )
-              }
-            />
+            <div className="modal-buttons">
 
-            <br />
-            <br />
+              <button
+                onClick={() =>
+                  window.print()
+                }
+              >
+                Imprimir
+              </button>
 
-            <input
-              type="number"
-              placeholder="Intervalo KM"
-              value={
-                editarIntervaloKm
-              }
-              onChange={(e) =>
-                setEditarIntervaloKm(
-                  e.target.value
-                )
-              }
-            />
+              <button
+                onClick={() =>
+                  setModalVisualizar(
+                    false
+                  )
+                }
+              >
+                Fechar
+              </button>
 
-            <br />
-            <br />
-
-            <input
-              type="number"
-              placeholder="Intervalo Meses"
-              value={
-                editarIntervaloMeses
-              }
-              onChange={(e) =>
-                setEditarIntervaloMeses(
-                  e.target.value
-                )
-              }
-            />
-
-            <br />
-            <br />
-
-            <textarea
-              placeholder="Observação"
-              value={
-                editarObservacao
-              }
-              onChange={(e) =>
-                setEditarObservacao(
-                  e.target.value
-                )
-              }
-            />
-
-            <br />
-            <br />
-
-            <button
-              onClick={
-                salvarEdicao
-              }
-            >
-              Salvar
-            </button>
-
-            {" "}
-
-            <button
-              onClick={() =>
-                setModalEditar(false)
-              }
-            >
-              Cancelar
-            </button>
+            </div>
 
           </div>
 
