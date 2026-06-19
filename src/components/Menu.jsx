@@ -48,7 +48,7 @@ export default function Menu() {
             )
           }
         >
-          Dashboard
+          Painel Inicio
         </button>
 
         <button
