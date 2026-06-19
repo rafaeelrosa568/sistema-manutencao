@@ -199,7 +199,7 @@ export default function Login() {
         <div className="login-header">
 
           <h1>
-            Controle de Frota
+            Gestão de Frotas
           </h1>
 
           <p>
