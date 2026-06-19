@@ -1,19 +1,16 @@
-import { useEffect, useState }
-from "react";
+import { useEffect, useState } from "react";
 
-import Menu
-from "../components/Menu";
+import Menu from "../components/Menu";
 
 import {
   collection,
-  addDoc,
+ addDoc,
   getDocs,
   updateDoc,
   doc
 } from "firebase/firestore";
 
-import { db }
-from "../firebase";
+import { db } from "../firebase";
 
 export default function Veiculos() {
 
@@ -21,41 +18,35 @@ export default function Veiculos() {
     localStorage.getItem("user")
   );
 
-  const [marca, setMarca] =
-    useState("");
+  const [marca,setMarca]=useState("");
+  const [modelo,setModelo]=useState("");
+  const [placa,setPlaca]=useState("");
+  const [cor,setCor]=useState("");
+  const [tipo,setTipo]=useState("");
+  const [km,setKm]=useState("");
 
-  const [modelo,
-    setModelo] =
-    useState("");
-
-  const [placa, setPlaca] =
-    useState("");
-
-  const [cor, setCor] =
-    useState("");
-
-  const [tipo, setTipo] =
-    useState("");
-
-  const [km, setKm] =
-    useState("");
-
-  const [veiculos,
-    setVeiculos] =
+  const [veiculos,setVeiculos]=
     useState([]);
 
-  const [modalVer,
-    setModalVer] =
+  const [modalVer,setModalVer]=
     useState(false);
 
-  const [
-    veiculoSelecionado,
-    setVeiculoSelecionado
-  ] = useState(null);
+  const [modalEditar,
+    setModalEditar]=
+    useState(false);
 
-  async function carregarVeiculos() {
+  const [veiculoSelecionado,
+    setVeiculoSelecionado]=
+    useState(null);
 
-    const querySnapshot =
+  const [editandoId,
+    setEditandoId]=
+    useState(null);
+
+
+  async function carregarVeiculos(){
+
+    const querySnapshot=
       await getDocs(
         collection(
           db,
@@ -63,13 +54,13 @@ export default function Veiculos() {
         )
       );
 
-    let lista = [];
+    let lista=[];
 
     querySnapshot.forEach(
-      (docItem) => {
+      (docItem)=>{
 
       lista.push({
-        id: docItem.id,
+        id:docItem.id,
         ...docItem.data()
       });
 
@@ -78,17 +69,18 @@ export default function Veiculos() {
     setVeiculos(lista);
   }
 
-  useEffect(() => {
+  useEffect(()=>{
 
     carregarVeiculos();
 
-  }, []);
+  },[]);
 
-  async function cadastrarVeiculo(e) {
+
+  async function cadastrarVeiculo(e){
 
     e.preventDefault();
 
-    try {
+    try{
 
       await addDoc(
         collection(
@@ -101,369 +93,550 @@ export default function Veiculos() {
           placa,
           cor,
           tipo,
-          km: Number(km),
-          ativo: true
+          km:Number(km),
+          ativo:true
         }
       );
+
+      limparFormulario();
+
+      carregarVeiculos();
 
       alert(
         "Veículo cadastrado"
       );
 
-      setMarca("");
-      setModelo("");
-      setPlaca("");
-      setCor("");
-      setTipo("");
-      setKm("");
-
-      carregarVeiculos();
-
-    } catch (error) {
+    }catch(error){
 
       console.log(error);
 
-      alert(error.message);
-    }
-  }
-
-  async function alterarStatus(
-    id,
-    status
-  ) {
-
-    const veiculoRef =
-      doc(
-        db,
-        "veiculos",
-        id
+      alert(
+        error.message
       );
+    }
 
-    await updateDoc(
-      veiculoRef,
-      {
-        ativo: status
-      }
-    );
-
-    carregarVeiculos();
   }
 
-  function abrirModal(
+
+  function limparFormulario(){
+
+    setMarca("");
+    setModelo("");
+    setPlaca("");
+    setCor("");
+    setTipo("");
+    setKm("");
+
+    setEditandoId(null);
+
+    setModalEditar(false);
+
+  }
+
+
+  function abrirModalVisualizar(
     veiculo
-  ) {
+  ){
 
     setVeiculoSelecionado(
       veiculo
     );
 
     setModalVer(true);
+
   }
 
-  return (
-
-    <div>
-
-      <Menu />
-
-      <div className="page">
-
-        {user.perfil ===
-          "administrador" && (
-
-          <div className="card">
-
-            <h1>
-              Veículos
-            </h1>
-
-            <br />
-
-            <form
-              className="form-padrao"
-              onSubmit={
-                cadastrarVeiculo
-              }
-            >
-
-              <input
-                type="text"
-                placeholder="Marca"
-                value={marca}
-                onChange={(e) =>
-                  setMarca(
-                    e.target.value
-                  )
-                }
-                required
-              />
-
-              <input
-                type="text"
-                placeholder="Modelo"
-                value={modelo}
-                onChange={(e) =>
-                  setModelo(
-                    e.target.value
-                  )
-                }
-                required
-              />
-
-              <input
-                type="text"
-                placeholder="Placa"
-                value={placa}
-                onChange={(e) =>
-                  setPlaca(
-                    e.target.value
-                  )
-                }
-                required
-              />
-
-              <input
-                type="text"
-                placeholder="Cor"
-                value={cor}
-                onChange={(e) =>
-                  setCor(
-                    e.target.value
-                  )
-                }
-                required
-              />
-
-              <input
-                type="text"
-                placeholder="Tipo"
-                value={tipo}
-                onChange={(e) =>
-                  setTipo(
-                    e.target.value
-                  )
-                }
-                required
-              />
-
-              <input
-                type="number"
-                placeholder="KM"
-                value={km}
-                onChange={(e) =>
-                  setKm(
-                    e.target.value
-                  )
-                }
-                required
-              />
-
-              <button type="submit">
-                Cadastrar
-              </button>
 
-            </form>
+  function abrirModalEditar(
+    veiculo
+  ){
 
-          </div>
+    setMarca(
+      veiculo.marca
+    );
 
-        )}
+    setModelo(
+      veiculo.modelo
+    );
 
-        <br />
+    setPlaca(
+      veiculo.placa
+    );
 
-        <div className="veiculos-grid">
+    setCor(
+      veiculo.cor
+    );
 
-          {veiculos.map(
-            (veiculo) => (
+    setTipo(
+      veiculo.tipo
+    );
 
-            <div
-              className="veiculo-card"
-              key={veiculo.id}
-            >
+    setKm(
+      veiculo.km
+    );
 
-              <h2>
+    setEditandoId(
+      veiculo.id
+    );
 
-                {veiculo.marca}
-                {" "}
-                {veiculo.modelo}
+    setModalEditar(
+      true
+    );
 
-              </h2>
+  }
 
-              <p>
-                <strong>
-                  Placa:
-                </strong>
 
-                {" "}
+  async function salvarEdicao(
+    e
+  ){
 
-                {veiculo.placa}
-              </p>
+    e.preventDefault();
 
-              <p>
-                <strong>
-                  Tipo:
-                </strong>
+    try{
 
-                {" "}
+      const ref=
+      doc(
+        db,
+        "veiculos",
+        editandoId
+      );
 
-                {veiculo.tipo}
-              </p>
+      await updateDoc(
+        ref,
+        {
+          marca,
+          modelo,
+          placa,
+          cor,
+          tipo,
+          km:Number(km)
+        }
+      );
 
-              <p>
-                <strong>
-                  KM:
-                </strong>
+      alert(
+        "Veículo atualizado"
+      );
 
-                {" "}
+      limparFormulario();
 
-                {veiculo.km}
-              </p>
+      carregarVeiculos();
+
+    }catch(error){
+
+      console.log(error);
+
+      alert(
+        error.message
+      );
+
+    }
+
+  }
+
+
+  async function alterarStatus(
+    id,
+    status
+  ){
+
+    const ref=
+    doc(
+      db,
+      "veiculos",
+      id
+    );
+
+    await updateDoc(
+      ref,
+      {
+        ativo:status
+      }
+    );
+
+    carregarVeiculos();
+
+  }
+
+  return(
+
+<div>
+
+<Menu/>
+
+<div className="page">
+
+{user.perfil==="administrador"&&(
+
+<div className="card">
+
+<h1>Veículos</h1>
+
+<br/>
+
+<form
+className="form-padrao"
+onSubmit={
+cadastrarVeiculo
+}
+>
+
+<input
+type="text"
+placeholder="Marca"
+value={marca}
+onChange={(e)=>
+setMarca(
+e.target.value
+)}
+required
+/>
 
-              <div className="acoes-card">
+<input
+type="text"
+placeholder="Modelo"
+value={modelo}
+onChange={(e)=>
+setModelo(
+e.target.value
+)}
+required
+/>
 
-                <button
-                  onClick={() =>
-                    abrirModal(
-                      veiculo
-                    )
-                  }
-                >
-                  Ver
-                </button>
+<input
+type="text"
+placeholder="Placa"
+value={placa}
+onChange={(e)=>
+setPlaca(
+e.target.value
+)}
+required
+/>
 
-                {user.perfil ===
-                  "administrador" && (
+<input
+type="text"
+placeholder="Cor"
+value={cor}
+onChange={(e)=>
+setCor(
+e.target.value
+)}
+required
+/>
 
-                  <button
-                    onClick={() =>
-                      alterarStatus(
-                        veiculo.id,
-                        !veiculo.ativo
-                      )
-                    }
-                  >
+<input
+type="text"
+placeholder="Tipo"
+value={tipo}
+onChange={(e)=>
+setTipo(
+e.target.value
+)}
+required
+/>
 
-                    {veiculo.ativo
-                      ? "Inativar"
-                      : "Ativar"}
+<input
+type="number"
+placeholder="KM"
+value={km}
+onChange={(e)=>
+setKm(
+e.target.value
+)}
+required
+/>
 
-                  </button>
+<button type="submit">
 
-                )}
+Cadastrar
 
-              </div>
+</button>
 
-            </div>
+</form>
 
-          ))}
+</div>
 
-        </div>
+)}
 
-      </div>
+<br/>
 
-      {modalVer && (
+<div className="veiculos-grid">
 
-        <div className="modal-overlay">
+{veiculos.map(
+(veiculo)=>(
 
-          <div className="modal">
+<div
+key={veiculo.id}
+className="veiculo-card"
+>
 
-            <h2>
-              Detalhes
-            </h2>
+<h2>
 
-            <br />
+{veiculo.marca}
+{" "}
+{veiculo.modelo}
 
-            <p>
-              <strong>
-                Marca:
-              </strong>
+</h2>
 
-              {" "}
+<p>
 
-              {
-                veiculoSelecionado?.marca
-              }
-            </p>
+<strong>Placa:</strong>
 
-            <p>
-              <strong>
-                Modelo:
-              </strong>
+{" "}
 
-              {" "}
+{veiculo.placa}
 
-              {
-                veiculoSelecionado?.modelo
-              }
-            </p>
+</p>
 
-            <p>
-              <strong>
-                Placa:
-              </strong>
+<p>
 
-              {" "}
+<strong>Tipo:</strong>
 
-              {
-                veiculoSelecionado?.placa
-              }
-            </p>
+{" "}
 
-            <p>
-              <strong>
-                Cor:
-              </strong>
+{veiculo.tipo}
 
-              {" "}
+</p>
 
-              {
-                veiculoSelecionado?.cor
-              }
-            </p>
+<p>
 
-            <p>
-              <strong>
-                Tipo:
-              </strong>
+<strong>KM:</strong>
 
-              {" "}
+{" "}
 
-              {
-                veiculoSelecionado?.tipo
-              }
-            </p>
+{veiculo.km}
 
-            <p>
-              <strong>
-                KM:
-              </strong>
+</p>
 
-              {" "}
+<p>
 
-              {
-                veiculoSelecionado?.km
-              }
-            </p>
+<strong>Status:</strong>
 
-            <br />
+{" "}
 
-            <div className="modal-buttons">
+{veiculo.ativo ? (
 
-              <button
-                onClick={() =>
-                  setModalVer(false)
-                }
-              >
-                Fechar
-              </button>
+<span className="status-ativo">
 
-            </div>
+Ativo
 
-          </div>
+</span>
 
-        </div>
+) : (
 
-      )}
+<span className="status-inativo">
 
-    </div>
-  );
+Inativo
+
+</span>
+
+)}
+
+</p>
+
+
+<div className="acoes-card">
+
+<button
+onClick={()=>abrirModalVisualizar(
+veiculo
+)}
+>
+
+Ver
+
+</button>
+
+{user.perfil==="administrador"&&(
+
+<>
+
+<button
+onClick={()=>abrirModalEditar(
+veiculo
+)}
+>
+
+Editar
+
+</button>
+
+
+<button
+onClick={()=>alterarStatus(
+veiculo.id,
+!veiculo.ativo
+)}
+>
+
+{veiculo.ativo
+?"Inativar"
+:"Ativar"}
+
+</button>
+
+</>
+
+)}
+
+</div>
+
+</div>
+
+))}
+
+</div>
+
+</div>
+
+{modalVer&&(
+
+<div className="modal-overlay">
+
+<div className="modal">
+
+<h2>
+
+Detalhes do Veículo
+
+</h2>
+
+<br/>
+
+<p><strong>Marca:</strong> {veiculoSelecionado?.marca}</p>
+
+<p><strong>Modelo:</strong> {veiculoSelecionado?.modelo}</p>
+
+<p><strong>Placa:</strong> {veiculoSelecionado?.placa}</p>
+
+<p><strong>Cor:</strong> {veiculoSelecionado?.cor}</p>
+
+<p><strong>Tipo:</strong> {veiculoSelecionado?.tipo}</p>
+
+<p><strong>KM:</strong> {veiculoSelecionado?.km}</p>
+
+<br/>
+
+<button
+onClick={()=>
+setModalVer(false)
+}
+>
+
+Fechar
+
+</button>
+
+</div>
+
+</div>
+
+)}
+
+{modalEditar&&(
+
+<div className="modal-overlay">
+
+<div className="modal">
+
+<h2>
+
+Editar Veículo
+
+</h2>
+
+<br/>
+
+<form
+onSubmit={
+salvarEdicao
+}
+>
+
+<input
+value={marca}
+onChange={(e)=>
+setMarca(
+e.target.value
+)}
+/>
+
+<input
+value={modelo}
+onChange={(e)=>
+setModelo(
+e.target.value
+)}
+/>
+
+<input
+value={placa}
+onChange={(e)=>
+setPlaca(
+e.target.value
+)}
+/>
+
+<input
+value={cor}
+onChange={(e)=>
+setCor(
+e.target.value
+)}
+/>
+
+<input
+value={tipo}
+onChange={(e)=>
+setTipo(
+e.target.value
+)}
+/>
+
+<input
+type="number"
+value={km}
+onChange={(e)=>
+setKm(
+e.target.value
+)}
+/>
+
+<div
+className="modal-buttons"
+>
+
+<button
+type="submit"
+>
+
+Salvar
+
+</button>
+
+<button
+type="button"
+onClick={
+limparFormulario
+}
+>
+
+Cancelar
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+)}
+
+</div>
+
+);
+
 }
