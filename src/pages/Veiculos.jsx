@@ -1,16 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState }
+from "react";
 
-import Menu from "../components/Menu";
+import Menu
+from "../components/Menu";
 
 import {
   collection,
- addDoc,
+  addDoc,
   getDocs,
   updateDoc,
   doc
 } from "firebase/firestore";
 
-import { db } from "../firebase";
+import { db }
+from "../firebase";
 
 export default function Veiculos() {
 
@@ -21,7 +24,8 @@ export default function Veiculos() {
   const [marca, setMarca] =
     useState("");
 
-  const [modelo, setModelo] =
+  const [modelo,
+    setModelo] =
     useState("");
 
   const [placa, setPlaca] =
@@ -36,19 +40,13 @@ export default function Veiculos() {
   const [km, setKm] =
     useState("");
 
-  const [veiculos, setVeiculos] =
+  const [veiculos,
+    setVeiculos] =
     useState([]);
 
-  const [modalEditar, setModalEditar] =
+  const [modalVer,
+    setModalVer] =
     useState(false);
-
-  const [editandoId, setEditandoId] =
-    useState(null);
-
-  const [
-    modalDetalhes,
-    setModalDetalhes
-  ] = useState(false);
 
   const [
     veiculoSelecionado,
@@ -59,12 +57,16 @@ export default function Veiculos() {
 
     const querySnapshot =
       await getDocs(
-        collection(db, "veiculos")
+        collection(
+          db,
+          "veiculos"
+        )
       );
 
     let lista = [];
 
-    querySnapshot.forEach((docItem) => {
+    querySnapshot.forEach(
+      (docItem) => {
 
       lista.push({
         id: docItem.id,
@@ -82,20 +84,6 @@ export default function Veiculos() {
 
   }, []);
 
-  function limparFormulario() {
-
-    setMarca("");
-    setModelo("");
-    setPlaca("");
-    setCor("");
-    setTipo("");
-    setKm("");
-
-    setEditandoId(null);
-
-    setModalEditar(false);
-  }
-
   async function cadastrarVeiculo(e) {
 
     e.preventDefault();
@@ -103,7 +91,10 @@ export default function Veiculos() {
     try {
 
       await addDoc(
-        collection(db, "veiculos"),
+        collection(
+          db,
+          "veiculos"
+        ),
         {
           marca,
           modelo,
@@ -119,78 +110,12 @@ export default function Veiculos() {
         "Veículo cadastrado"
       );
 
-      limparFormulario();
-
-      carregarVeiculos();
-
-    } catch (error) {
-
-      console.log(error);
-
-      alert(error.message);
-    }
-  }
-
-  function abrirModalEditar(veiculo) {
-
-    setMarca(veiculo.marca);
-
-    setModelo(
-      veiculo.modelo
-    );
-
-    setPlaca(veiculo.placa);
-
-    setCor(veiculo.cor);
-
-    setTipo(veiculo.tipo);
-
-    setKm(veiculo.km);
-
-    setEditandoId(veiculo.id);
-
-    setModalEditar(true);
-  }
-
-  function abrirDetalhes(veiculo) {
-
-    setVeiculoSelecionado(
-      veiculo
-    );
-
-    setModalDetalhes(true);
-  }
-
-  async function salvarEdicao(e) {
-
-    e.preventDefault();
-
-    try {
-
-      const veiculoRef =
-        doc(
-          db,
-          "veiculos",
-          editandoId
-        );
-
-      await updateDoc(
-        veiculoRef,
-        {
-          marca,
-          modelo,
-          placa,
-          cor,
-          tipo,
-          km: Number(km)
-        }
-      );
-
-      alert(
-        "Veículo atualizado"
-      );
-
-      limparFormulario();
+      setMarca("");
+      setModelo("");
+      setPlaca("");
+      setCor("");
+      setTipo("");
+      setKm("");
 
       carregarVeiculos();
 
@@ -224,6 +149,17 @@ export default function Veiculos() {
     carregarVeiculos();
   }
 
+  function abrirModal(
+    veiculo
+  ) {
+
+    setVeiculoSelecionado(
+      veiculo
+    );
+
+    setModalVer(true);
+  }
+
   return (
 
     <div>
@@ -232,272 +168,21 @@ export default function Veiculos() {
 
       <div className="page">
 
-        <h1>
-          Veículos
-        </h1>
-
-        <br />
-
         {user.perfil ===
           "administrador" && (
 
-          <form
-            className="form-padrao"
-            onSubmit={
-              cadastrarVeiculo
-            }
-          >
+          <div className="card">
 
-            <input
-              type="text"
-              placeholder="Marca"
-              value={marca}
-              onChange={(e) =>
-                setMarca(
-                  e.target.value
-                )
-              }
-              required
-            />
-
-            <input
-              type="text"
-              placeholder="Modelo"
-              value={modelo}
-              onChange={(e) =>
-                setModelo(
-                  e.target.value
-                )
-              }
-              required
-            />
-
-            <input
-              type="text"
-              placeholder="Placa"
-              value={placa}
-              onChange={(e) =>
-                setPlaca(
-                  e.target.value
-                )
-              }
-              required
-            />
-
-            <input
-              type="text"
-              placeholder="Cor"
-              value={cor}
-              onChange={(e) =>
-                setCor(
-                  e.target.value
-                )
-              }
-              required
-            />
-
-            <input
-              type="text"
-              placeholder="Tipo"
-              value={tipo}
-              onChange={(e) =>
-                setTipo(
-                  e.target.value
-                )
-              }
-              required
-            />
-
-            <input
-              type="number"
-              placeholder="KM Inicial"
-              value={km}
-              onChange={(e) =>
-                setKm(
-                  e.target.value
-                )
-              }
-              required
-            />
-
-            <button type="submit">
-              Cadastrar
-            </button>
-
-          </form>
-
-        )}
-
-        <br />
-        <br />
-
-        <table className="tabela">
-
-          <thead>
-
-            <tr>
-
-              <th>Marca</th>
-              <th>Modelo</th>
-              <th>Placa</th>
-              <th>Cor</th>
-              <th>Tipo</th>
-              <th>KM</th>
-              <th>Status</th>
-              <th>Detalhes</th>
-
-              {user.perfil ===
-                "administrador" && (
-                <th>Ações</th>
-              )}
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {veiculos.map(
-              (veiculo) => (
-
-              <tr
-                key={veiculo.id}
-              >
-
-                <td>
-                  {veiculo.marca}
-                </td>
-
-                <td>
-                  {veiculo.modelo}
-                </td>
-
-                <td>
-                  {veiculo.placa}
-                </td>
-
-                <td>
-                  {veiculo.cor}
-                </td>
-
-                <td>
-                  {veiculo.tipo}
-                </td>
-
-                <td>
-                  {veiculo.km}
-                </td>
-
-                <td>
-
-                  {veiculo.ativo ? (
-
-                    <span className="status-ativo">
-                      Ativo
-                    </span>
-
-                  ) : (
-
-                    <span className="status-inativo">
-                      Inativo
-                    </span>
-
-                  )}
-
-                </td>
-
-                <td>
-
-                  <button
-                    onClick={() =>
-                      abrirDetalhes(
-                        veiculo
-                      )
-                    }
-                  >
-                    Ver
-                  </button>
-
-                </td>
-
-                {user.perfil ===
-                  "administrador" && (
-
-                  <td>
-
-                    <div className="acoes">
-
-                      <button
-                        onClick={() =>
-                          abrirModalEditar(
-                            veiculo
-                          )
-                        }
-                      >
-                        Editar
-                      </button>
-
-                      {" "}
-
-                      {veiculo.ativo ? (
-
-                        <button
-                          onClick={() =>
-                            alterarStatus(
-                              veiculo.id,
-                              false
-                            )
-                          }
-                        >
-                          Inativar
-                        </button>
-
-                      ) : (
-
-                        <button
-                          onClick={() =>
-                            alterarStatus(
-                              veiculo.id,
-                              true
-                            )
-                          }
-                        >
-                          Ativar
-                        </button>
-
-                      )}
-
-                    </div>
-
-                  </td>
-
-                )}
-
-              </tr>
-
-            ))}
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-      {modalEditar && (
-
-        <div className="modal-overlay">
-
-          <div className="modal">
-
-            <h2>
-              Editar Veículo
-            </h2>
+            <h1>
+              Veículos
+            </h1>
 
             <br />
 
             <form
+              className="form-padrao"
               onSubmit={
-                salvarEdicao
+                cadastrarVeiculo
               }
             >
 
@@ -513,9 +198,6 @@ export default function Veiculos() {
                 required
               />
 
-              <br />
-              <br />
-
               <input
                 type="text"
                 placeholder="Modelo"
@@ -527,9 +209,6 @@ export default function Veiculos() {
                 }
                 required
               />
-
-              <br />
-              <br />
 
               <input
                 type="text"
@@ -543,9 +222,6 @@ export default function Veiculos() {
                 required
               />
 
-              <br />
-              <br />
-
               <input
                 type="text"
                 placeholder="Cor"
@@ -557,9 +233,6 @@ export default function Veiculos() {
                 }
                 required
               />
-
-              <br />
-              <br />
 
               <input
                 type="text"
@@ -573,9 +246,6 @@ export default function Veiculos() {
                 required
               />
 
-              <br />
-              <br />
-
               <input
                 type="number"
                 placeholder="KM"
@@ -588,51 +258,121 @@ export default function Veiculos() {
                 required
               />
 
-              <br />
-              <br />
-
-              <div className="modal-buttons">
-
-                <button type="submit">
-                  Salvar
-                </button>
-
-                {" "}
-
-                <button
-                  type="button"
-                  onClick={
-                    limparFormulario
-                  }
-                >
-                  Cancelar
-                </button>
-
-              </div>
+              <button type="submit">
+                Cadastrar
+              </button>
 
             </form>
 
           </div>
 
+        )}
+
+        <br />
+
+        <div className="veiculos-grid">
+
+          {veiculos.map(
+            (veiculo) => (
+
+            <div
+              className="veiculo-card"
+              key={veiculo.id}
+            >
+
+              <h2>
+
+                {veiculo.marca}
+                {" "}
+                {veiculo.modelo}
+
+              </h2>
+
+              <p>
+                <strong>
+                  Placa:
+                </strong>
+
+                {" "}
+
+                {veiculo.placa}
+              </p>
+
+              <p>
+                <strong>
+                  Tipo:
+                </strong>
+
+                {" "}
+
+                {veiculo.tipo}
+              </p>
+
+              <p>
+                <strong>
+                  KM:
+                </strong>
+
+                {" "}
+
+                {veiculo.km}
+              </p>
+
+              <div className="acoes-card">
+
+                <button
+                  onClick={() =>
+                    abrirModal(
+                      veiculo
+                    )
+                  }
+                >
+                  Ver
+                </button>
+
+                {user.perfil ===
+                  "administrador" && (
+
+                  <button
+                    onClick={() =>
+                      alterarStatus(
+                        veiculo.id,
+                        !veiculo.ativo
+                      )
+                    }
+                  >
+
+                    {veiculo.ativo
+                      ? "Inativar"
+                      : "Ativar"}
+
+                  </button>
+
+                )}
+
+              </div>
+
+            </div>
+
+          ))}
+
         </div>
 
-      )}
+      </div>
 
-      {modalDetalhes &&
-      veiculoSelecionado && (
+      {modalVer && (
 
         <div className="modal-overlay">
 
           <div className="modal">
 
             <h2>
-              Detalhes Veículo
+              Detalhes
             </h2>
 
             <br />
 
             <p>
-
               <strong>
                 Marca:
               </strong>
@@ -640,15 +380,11 @@ export default function Veiculos() {
               {" "}
 
               {
-                veiculoSelecionado.marca
+                veiculoSelecionado?.marca
               }
-
             </p>
 
-            <br />
-
             <p>
-
               <strong>
                 Modelo:
               </strong>
@@ -656,15 +392,11 @@ export default function Veiculos() {
               {" "}
 
               {
-                veiculoSelecionado.modelo
+                veiculoSelecionado?.modelo
               }
-
             </p>
 
-            <br />
-
             <p>
-
               <strong>
                 Placa:
               </strong>
@@ -672,15 +404,11 @@ export default function Veiculos() {
               {" "}
 
               {
-                veiculoSelecionado.placa
+                veiculoSelecionado?.placa
               }
-
             </p>
 
-            <br />
-
             <p>
-
               <strong>
                 Cor:
               </strong>
@@ -688,15 +416,11 @@ export default function Veiculos() {
               {" "}
 
               {
-                veiculoSelecionado.cor
+                veiculoSelecionado?.cor
               }
-
             </p>
 
-            <br />
-
             <p>
-
               <strong>
                 Tipo:
               </strong>
@@ -704,52 +428,35 @@ export default function Veiculos() {
               {" "}
 
               {
-                veiculoSelecionado.tipo
+                veiculoSelecionado?.tipo
               }
-
             </p>
 
-            <br />
-
             <p>
-
               <strong>
-                KM Cadastro:
+                KM:
               </strong>
 
               {" "}
 
               {
-                veiculoSelecionado.km
+                veiculoSelecionado?.km
               }
-
             </p>
 
             <br />
 
-            <p>
+            <div className="modal-buttons">
 
-              <strong>
-                Status:
-              </strong>
+              <button
+                onClick={() =>
+                  setModalVer(false)
+                }
+              >
+                Fechar
+              </button>
 
-              {" "}
-
-              {veiculoSelecionado.ativo
-                ? "Ativo"
-                : "Inativo"}
-
-            </p>
-
-            <br />
-
-            <button
-              onClick={() =>
-                setModalDetalhes(false)
-              }
-            >
-              Fechar
-            </button>
+            </div>
 
           </div>
 
