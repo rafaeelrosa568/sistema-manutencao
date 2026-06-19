@@ -764,3 +764,808 @@ body.dark .card {
     grid-template-columns: 1fr;
   }
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+
+  font-family: Arial, sans-serif;
+
+  background: #f5f7fb;
+
+  color: #222;
+}
+
+body.dark {
+
+  background: #121212;
+
+  color: white;
+}
+
+/* LOGIN */
+
+.login-page {
+
+  min-height: 100vh;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  padding: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #1e40af
+    );
+}
+
+.login-box {
+
+  width: 100%;
+
+  max-width: 420px;
+
+  background: white;
+
+  padding: 35px;
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 10px 30px
+    rgba(0,0,0,0.2);
+}
+
+body.dark .login-box {
+
+  background: #1e1e1e;
+}
+
+.login-header {
+
+  text-align: center;
+
+  margin-bottom: 30px;
+}
+
+.login-header h1 {
+
+  font-size: 30px;
+
+  margin-bottom: 10px;
+}
+
+.login-header p {
+
+  color: #777;
+}
+
+.theme-button {
+
+  position: absolute;
+
+  top: 20px;
+
+  right: 20px;
+}
+
+.theme-button button {
+
+  background: white;
+
+  border: none;
+
+  padding: 10px 15px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+}
+
+.login-box form {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 15px;
+}
+
+.login-box input {
+
+  width: 100%;
+
+  padding: 14px;
+
+  border-radius: 10px;
+
+  border: 1px solid #ccc;
+
+  font-size: 15px;
+}
+
+.btn-login {
+
+  background: #2563eb;
+
+  color: white;
+
+  border: none;
+
+  padding: 14px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  font-weight: bold;
+}
+
+.btn-reset {
+
+  background: transparent;
+
+  border: none;
+
+  color: #2563eb;
+
+  cursor: pointer;
+}
+
+/* MENU */
+
+.menu {
+
+  background: white;
+
+  padding: 15px 20px;
+
+  box-shadow:
+    0 2px 10px
+    rgba(0,0,0,0.08);
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 15px;
+}
+
+body.dark .menu {
+
+  background: #1e1e1e;
+}
+
+.menu-top {
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+.menu-links {
+
+  display: flex;
+
+  gap: 10px;
+
+  flex-wrap: wrap;
+}
+
+.menu-links button {
+
+  background: #2563eb;
+
+  color: white;
+
+  border: none;
+
+  padding: 10px 15px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+}
+
+.btn-sair {
+
+  background: #dc2626 !important;
+}
+
+.menu-user {
+
+  font-size: 14px;
+
+  color: #666;
+}
+
+/* PAGE */
+
+.page {
+
+  padding: 20px;
+}
+
+/* CARD */
+
+.card {
+
+  background: white;
+
+  border-radius: 18px;
+
+  padding: 20px;
+
+  box-shadow:
+    0 2px 10px
+    rgba(0,0,0,0.08);
+}
+
+body.dark .card {
+
+  background: #1e1e1e;
+}
+
+/* FORM */
+
+.form-padrao {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(220px, 1fr)
+    );
+
+  gap: 15px;
+}
+
+.form-padrao input,
+.form-padrao select {
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  border: 1px solid #ccc;
+
+  width: 100%;
+}
+
+.form-padrao button {
+
+  background: #2563eb;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 10px;
+
+  padding: 12px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+}
+
+/* TABELA */
+
+.table-responsive {
+
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.tabela {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 900px;
+}
+
+.tabela th {
+
+  background: #2563eb;
+
+  color: white;
+
+  padding: 14px;
+
+  text-align: left;
+}
+
+.tabela td {
+
+  padding: 14px;
+
+  border-bottom:
+    1px solid #ddd;
+}
+
+/* STATUS */
+
+.status-ativo {
+
+  background: #16a34a;
+
+  color: white;
+
+  padding: 6px 10px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+}
+
+.status-inativo {
+
+  background: #dc2626;
+
+  color: white;
+
+  padding: 6px 10px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+}
+
+/* AÇÕES */
+
+.acoes {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.acoes button {
+
+  border: none;
+
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-size: 13px;
+
+  font-weight: bold;
+
+  background: #2563eb;
+}
+
+/* MODAL */
+
+.modal-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  background:
+    rgba(0,0,0,0.5);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  padding: 20px;
+
+  z-index: 999;
+}
+
+.modal {
+
+  width: 100%;
+
+  max-width: 500px;
+
+  background: white;
+
+  border-radius: 18px;
+
+  padding: 25px;
+}
+
+body.dark .modal {
+
+  background: #1e1e1e;
+}
+
+.modal input,
+.modal select {
+
+  width: 100%;
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  border: 1px solid #ccc;
+
+  margin-bottom: 15px;
+}
+
+.modal-buttons {
+
+  display: flex;
+
+  gap: 10px;
+
+  flex-wrap: wrap;
+}
+
+.modal-buttons button {
+
+  flex: 1;
+
+  border: none;
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+
+  color: white;
+
+  background: #2563eb;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+  .menu {
+
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .menu-links {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+      repeat(2, 1fr);
+
+    gap: 10px;
+  }
+
+  .menu-links button {
+
+    width: 100%;
+  }
+
+  .page {
+
+    padding: 15px;
+  }
+
+  .card {
+
+    padding: 15px;
+  }
+
+  .form-padrao {
+
+    grid-template-columns: 1fr;
+  }
+
+  .tabela {
+
+    min-width: 700px;
+  }
+
+  .acoes {
+
+    flex-direction: column;
+  }
+
+  .acoes button {
+
+    width: 100%;
+  }
+
+  .login-box {
+
+    padding: 25px;
+  }
+
+}
+
+/* MANUTENÇÕES APP */
+
+.manutencoes-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(320px, 1fr)
+    );
+
+  gap: 20px;
+}
+
+.manutencao-card {
+
+  background: white;
+
+  padding: 20px;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 2px 10px
+    rgba(0,0,0,0.08);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+body.dark .manutencao-card {
+
+  background: #1e1e1e;
+}
+
+.manutencao-card h2 {
+
+  font-size: 20px;
+
+  margin-bottom: 10px;
+}
+
+.manutencao-card input {
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  border: 1px solid #ccc;
+}
+
+.acoes-card {
+
+  display: flex;
+
+  gap: 10px;
+
+  flex-wrap: wrap;
+
+  margin-top: 10px;
+}
+
+.acoes-card button {
+
+  flex: 1;
+
+  border: none;
+
+  background: #2563eb;
+
+  color: white;
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+}
+
+/* DASHBOARD */
+
+.dashboard-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(220px, 1fr)
+    );
+
+  gap: 20px;
+}
+
+.dashboard-card {
+
+  background: white;
+
+  padding: 25px;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 2px 10px
+    rgba(0,0,0,0.08);
+
+  text-align: center;
+}
+
+body.dark .dashboard-card {
+
+  background: #1e1e1e;
+}
+
+.dashboard-card h1 {
+
+  font-size: 40px;
+
+  margin-top: 10px;
+}
+
+.dashboard-alertas {
+
+  display: grid;
+
+  gap: 15px;
+}
+
+.alerta-item {
+
+  background: #f5f5f5;
+
+  padding: 15px;
+
+  border-radius: 12px;
+}
+
+body.dark .alerta-item {
+
+  background: #2b2b2b;
+}
+
+/* VEICULOS */
+
+.veiculos-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(320px, 1fr)
+    );
+
+  gap: 20px;
+}
+
+.veiculo-card {
+
+  background: white;
+
+  padding: 20px;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 2px 10px
+    rgba(0,0,0,0.08);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+body.dark .veiculo-card {
+
+  background: #1e1e1e;
+}
+
+.card {
+
+  background: white;
+
+  padding: 25px;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 2px 10px
+    rgba(0,0,0,0.08);
+}
+
+body.dark .card {
+
+  background: #1e1e1e;
+}
+
+@media(max-width:700px){
+
+  .dashboard-card h1 {
+
+    font-size: 30px;
+  }
+
+  .veiculos-grid,
+  .manutencoes-grid {
+
+    grid-template-columns: 1fr;
+  }
+}
+
+/* USUARIOS */
+
+.usuarios-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(320px, 1fr)
+    );
+
+  gap: 20px;
+}
+
+.usuario-card {
+
+  background: white;
+
+  padding: 20px;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 2px 10px
+    rgba(0,0,0,0.08);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+body.dark .usuario-card {
+
+  background: #1e1e1e;
+}
