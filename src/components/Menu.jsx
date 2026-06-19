@@ -1,8 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate }
+from "react-router-dom";
 
 export default function Menu() {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const user = JSON.parse(
     localStorage.getItem("user")
@@ -10,7 +12,9 @@ export default function Menu() {
 
   function logout() {
 
-    localStorage.removeItem("user");
+    localStorage.removeItem(
+      "user"
+    );
 
     navigate("/");
   }
@@ -19,41 +23,72 @@ export default function Menu() {
 
     <div className="menu">
 
-      <h2>Sistema</h2>
+      <div className="menu-top">
+
+        <h2>
+          Controle Frota
+        </h2>
+
+        <div className="menu-user">
+
+          {user?.nome}
+          {" - "}
+          {user?.perfil}
+
+        </div>
+
+      </div>
 
       <div className="menu-links">
 
         <button
           onClick={() =>
-            navigate("/dashboard")
+            navigate(
+              "/dashboard"
+            )
           }
         >
           Dashboard
         </button>
 
-          <button
-  onClick={() =>
-    navigate("/veiculos")
-  }
->
-  Veículos
-</button>
+        <button
+          onClick={() =>
+            navigate(
+              "/veiculos"
+            )
+          }
+        >
+          Veículos
+        </button>
 
+        <button
+          onClick={() =>
+            navigate(
+              "/manutencoes"
+            )
+          }
+        >
+          Manutenções
+        </button>
 
-<button
-  onClick={() =>
-    navigate("/manutencoes")
-  }
->
-  Manutenções
-</button>
+        <button
+          onClick={() =>
+            navigate(
+              "/alterar-senha"
+            )
+          }
+        >
+          Alterar Senha
+        </button>
 
-        {user.perfil ===
+        {user?.perfil ===
           "administrador" && (
 
           <button
             onClick={() =>
-              navigate("/usuarios")
+              navigate(
+                "/usuarios"
+              )
             }
           >
             Usuários
@@ -61,17 +96,12 @@ export default function Menu() {
 
         )}
 
-        <button onClick={logout}>
+        <button
+          className="btn-sair"
+          onClick={logout}
+        >
           Sair
         </button>
-
-      </div>
-
-      <div className="menu-user">
-
-        {user.nome}
-        {" - "}
-        {user.perfil}
 
       </div>
 
