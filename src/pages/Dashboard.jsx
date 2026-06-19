@@ -121,7 +121,7 @@ export default function Dashboard() {
       <div className="page">
 
         <h1>
-          Dashboard
+          Painel Inicial
         </h1>
 
         <br />
