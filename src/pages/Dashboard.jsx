@@ -131,7 +131,7 @@ export default function Dashboard() {
           <div className="dashboard-card">
 
             <h2>
-              Usuários
+              Usuarios
             </h2>
 
             <h1>
@@ -143,7 +143,7 @@ export default function Dashboard() {
           <div className="dashboard-card">
 
             <h2>
-              Veículos
+              Veiculos
             </h2>
 
             <h1>
