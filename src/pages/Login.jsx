@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   signInWithEmailAndPassword,
@@ -18,14 +18,67 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [email, setEmail] =
+    useState("");
+
+  const [senha, setSenha] =
+    useState("");
 
   const [emailReset, setEmailReset] =
     useState("");
 
   const [modalReset, setModalReset] =
     useState(false);
+
+  const [darkMode, setDarkMode] =
+    useState(false);
+
+  useEffect(() => {
+
+    const temaSalvo =
+      localStorage.getItem("tema");
+
+    if (temaSalvo === "dark") {
+
+      setDarkMode(true);
+
+      document.body.classList.add(
+        "dark"
+      );
+
+    }
+
+  }, []);
+
+  function trocarTema() {
+
+    const novoTema = !darkMode;
+
+    setDarkMode(novoTema);
+
+    if (novoTema) {
+
+      document.body.classList.add(
+        "dark"
+      );
+
+      localStorage.setItem(
+        "tema",
+        "dark"
+      );
+
+    } else {
+
+      document.body.classList.remove(
+        "dark"
+      );
+
+      localStorage.setItem(
+        "tema",
+        "light"
+      );
+    }
+  }
 
   async function handleLogin(e) {
 
@@ -59,7 +112,6 @@ export default function Login() {
             ...dados
           };
         }
-
       });
 
       if (!usuarioEncontrado) {
@@ -95,7 +147,9 @@ export default function Login() {
 
       console.log(error);
 
-      alert("Email ou senha inválidos");
+      alert(
+        "Email ou senha inválidos"
+      );
     }
   }
 
@@ -126,48 +180,83 @@ export default function Login() {
 
   return (
 
-    <div className="login-container">
+    <div className="login-page">
 
-      <form
-        className="login-form"
-        onSubmit={handleLogin}
-      >
+      <div className="theme-button">
 
-        <h1>Conecte-se</h1>
+        <button onClick={trocarTema}>
 
-        <input
-          type="email"
-          placeholder="Digite seu email"
-          value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
-        />
+          {darkMode
+            ? "☀️ Claro"
+            : "🌙 Escuro"}
 
-        <input
-          type="password"
-          placeholder="Digite sua senha"
-          value={senha}
-          onChange={(e) =>
-            setSenha(e.target.value)
-          }
-        />
-
-        <button type="submit">
-          Entrar
         </button>
 
-        <button
-          type="button"
-          className="btn-reset"
-          onClick={() =>
-            setModalReset(true)
-          }
+      </div>
+
+      <div className="login-box">
+
+        <div className="login-header">
+
+          <h1>
+            Controle de Frota
+          </h1>
+
+          <p>
+            Sistema de gerenciamento
+            de veículos e manutenções
+          </p>
+
+        </div>
+
+        <form
+          onSubmit={handleLogin}
         >
-          Esqueci minha senha
-        </button>
 
-      </form>
+          <input
+            type="email"
+            placeholder="Digite seu email"
+            value={email}
+            onChange={(e) =>
+              setEmail(
+                e.target.value
+              )
+            }
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Digite sua senha"
+            value={senha}
+            onChange={(e) =>
+              setSenha(
+                e.target.value
+              )
+            }
+            required
+          />
+
+          <button
+            type="submit"
+            className="btn-login"
+          >
+            Entrar no Sistema
+          </button>
+
+          <button
+            type="button"
+            className="btn-reset"
+            onClick={() =>
+              setModalReset(true)
+            }
+          >
+            Esqueci minha senha
+          </button>
+
+        </form>
+
+      </div>
 
       {modalReset && (
 
@@ -175,7 +264,9 @@ export default function Login() {
 
           <div className="modal">
 
-            <h2>Redefinir Senha</h2>
+            <h2>
+              Redefinir Senha
+            </h2>
 
             <br />
 
