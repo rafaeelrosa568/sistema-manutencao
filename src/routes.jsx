@@ -9,6 +9,8 @@ import Dashboard from "./pages/Dashboard";
 import Usuarios from "./pages/Usuarios";
 import Veiculos from "./pages/Veiculos";
 import Manutencoes from "./pages/Manutencoes";
+import AlterarSenha
+from "./pages/AlterarSenha";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -59,6 +61,11 @@ export default function AppRoutes() {
       <Manutencoes />
     </ProtectedRoute>
   }
+/>
+
+<Route
+  path="/alterar-senha"
+  element={<AlterarSenha />}
 />
 
       </Routes>
