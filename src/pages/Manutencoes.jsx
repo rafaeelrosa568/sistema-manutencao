@@ -152,9 +152,11 @@ export default function Manutencoes() {
     return Number(manutencao.kmAtual) + Number(manutencao.intervaloKm);
   }
 
+  // NOVA FUNÇÃO ENVIADA POR VOCÊ
   function calcularKmRestante(manutencao) {
-    const kmRodado = Number(kmConsulta[manutencao.id] || 0);
-    return Number(manutencao.intervaloKm) - kmRodado;
+    const kmAtualVeiculo = Number(kmConsulta[manutencao.id] || 0);
+    const proximaTroca = Number(manutencao.kmAtual) + Number(manutencao.intervaloKm);
+    return proximaTroca - kmAtualVeiculo;
   }
 
   function calcularDataVencimento(manutencao) {
@@ -294,9 +296,10 @@ export default function Manutencoes() {
 
                 <br />
 
+                {/* PLACEHOLDER ATUALIZADO AQUI */}
                 <input
                   type="number"
-                  placeholder="KM rodados após manutenção"
+                  placeholder="KM atual do veículo"
                   value={kmConsulta[manutencao.id] || ""}
                   onChange={(e) =>
                     setKmConsulta({
