@@ -379,27 +379,33 @@ async function salvarEdicao(e) {
   }
 
   function calcularDataVencimento(
-    manutencao
+  manutencao
+) {
+
+  if (
+    !manutencao?.data
   ) {
+    return "";
+  }
 
-    if (
-      !manutencao.data ||
-      !manutencao.intervaloMeses
-    ) {
-      return "";
-    }
-
-    const dataBase =
-      new Date(
-        manutencao.data
-      );
-
-    dataBase.setMonth(
-      dataBase.getMonth() +
-      Number(
-        manutencao.intervaloMeses
-      )
+  const data =
+    new Date(
+      manutencao.data +
+      "T00:00:00"
     );
+
+  data.setMonth(
+    data.getMonth() +
+    Number(
+      manutencao.intervaloMeses || 0
+    )
+  );
+
+  return data.toLocaleDateString(
+    "pt-BR"
+  );
+
+}
 
     return dataBase
       .toLocaleDateString(
