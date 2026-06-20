@@ -59,7 +59,7 @@ export default function Manutencoes() {
     carregarManutencoes();
   }, []);
 
-  void function limparFormulario() {
+  function limparFormulario() {
     setVeiculoId("");
     setTipo("");
     setData("");
@@ -71,7 +71,7 @@ export default function Manutencoes() {
     setModalEditar(false);
   }
 
-  function obtenerVeiculo(id) {
+  function obterVeiculo(id) {
     return veiculos.find((v) => v.id === id);
   }
 
@@ -152,7 +152,6 @@ export default function Manutencoes() {
     return Number(manutencao.kmAtual) + Number(manutencao.intervaloKm);
   }
 
-  // NOVA FUNÇÃO ALTERADA
   function calcularKmRestante(manutencao) {
     const kmRodado = Number(kmConsulta[manutencao.id] || 0);
     return Number(manutencao.intervaloKm) - kmRodado;
@@ -167,7 +166,6 @@ export default function Manutencoes() {
     return data.toLocaleDateString("pt-BR");
   }
 
-  // NOVA FUNÇÃO ALTERADA (Removida também a lógica antiga de tempo que conflitava)
   function calcularStatus(manutencao) {
     if (manutencao.status === "encerrada") {
       return {
@@ -296,7 +294,6 @@ export default function Manutencoes() {
 
                 <br />
 
-                {/* PLACEHOLDER ATUALIZADO AQUI */}
                 <input
                   type="number"
                   placeholder="KM rodados após manutenção"
