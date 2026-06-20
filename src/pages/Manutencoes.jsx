@@ -1,5 +1,4 @@
-import { useEffect, useState }
-from "react";
+import { useEffect, useState } from "react";
 
 import Menu from "../components/Menu";
 
@@ -11,8 +10,7 @@ import {
   doc
 } from "firebase/firestore";
 
-import { db }
-from "../firebase";
+import { db } from "../firebase";
 
 export default function Manutencoes() {
 
@@ -20,8 +18,11 @@ export default function Manutencoes() {
     localStorage.getItem("user")
   );
 
-  const [veiculos,
-    setVeiculos] =
+  const [veiculos, setVeiculos] =
+    useState([]);
+
+  const [manutencoes,
+    setManutencoes] =
     useState([]);
 
   const [veiculoId,
@@ -53,23 +54,26 @@ export default function Manutencoes() {
     setObservacao] =
     useState("");
 
-  const [
-    manutencoes,
-    setManutencoes
-  ] = useState([]);
-
-  const [kmAtualVeiculo,
-    setKmAtualVeiculo] =
+  const [kmConsulta,
+    setKmConsulta] =
     useState({});
 
-  const [modalVisualizar,
-    setModalVisualizar] =
+  const [modalVer,
+    setModalVer] =
+    useState(false);
+
+  const [modalEditar,
+    setModalEditar] =
     useState(false);
 
   const [
     manutencaoSelecionada,
     setManutencaoSelecionada
   ] = useState(null);
+
+  const [editandoId,
+    setEditandoId] =
+    useState(null);
 
   async function carregarVeiculos() {
 
@@ -86,12 +90,13 @@ export default function Manutencoes() {
     querySnapshot.forEach(
       (docItem) => {
 
-      lista.push({
-        id: docItem.id,
-        ...docItem.data()
-      });
+        lista.push({
+          id: docItem.id,
+          ...docItem.data()
+        });
 
-    });
+      }
+    );
 
     setVeiculos(lista);
   }
@@ -111,12 +116,13 @@ export default function Manutencoes() {
     querySnapshot.forEach(
       (docItem) => {
 
-      lista.push({
-        id: docItem.id,
-        ...docItem.data()
-      });
+        lista.push({
+          id: docItem.id,
+          ...docItem.data()
+        });
 
-    });
+      }
+    );
 
     setManutencoes(lista);
   }
@@ -128,6 +134,21 @@ export default function Manutencoes() {
     carregarManutencoes();
 
   }, []);
+
+  function limparFormulario() {
+
+    setVeiculoId("");
+    setTipo("");
+    setData("");
+    setKmAtual("");
+    setIntervaloKm("");
+    setIntervaloMeses("");
+    setObservacao("");
+
+    setEditandoId(null);
+
+    setModalEditar(false);
+  }
 
   async function cadastrarManutencao(e) {
 
@@ -149,57 +170,17 @@ export default function Manutencoes() {
           intervaloKm:
             Number(intervaloKm),
           intervaloMeses:
-            Number(
-              intervaloMeses
-            ),
+            Number(intervaloMeses),
           observacao,
           status: "ativa"
         }
       );
 
       alert(
-        "Manutenção cadastrada"
+        "Manutenção cadastrada com sucesso"
       );
 
-      setVeiculoId("");
-      setTipo("");
-      setData("");
-      setKmAtual("");
-      setIntervaloKm("");
-      setIntervaloMeses("");
-      setObservacao("");
-
-      carregarManutencoes();
-
-    } catch (error) {
-
-      console.log(error);
-
-      alert(error.message);
-    }
-  }
-
-  async function finalizarManutencao(id) {
-
-    try {
-
-      const manutencaoRef =
-        doc(
-          db,
-          "manutencoes",
-          id
-        );
-
-      await updateDoc(
-        manutencaoRef,
-        {
-          status: "encerrada"
-        }
-      );
-
-      alert(
-        "Manutenção finalizada"
-      );
+      limparFormulario();
 
       carregarManutencoes();
 
@@ -218,60 +199,127 @@ export default function Manutencoes() {
     );
   }
 
-  function calcularStatus(
+  function calcularProximaTroca(
+    manutencao
+  ) {
+
+    return (
+      Number(
+        manutencao.kmAtual
+      ) +
+      Number(
+        manutencao.intervaloKm
+      )
+    );
+  }
+
+  function calcularKmRestante(
+    manutencao
+  ) {
+
+    const kmDigitado =
+      Number(
+        kmConsulta[
+          manutencao.id
+        ] || 0
+      );
+
+    const proximaTroca =
+      calcularProximaTroca(
+        manutencao
+      );
+
+    return (
+      proximaTroca -
+      kmDigitado
+    );
+  }
+
+  function calcularDataVencimento(
+    manutencao
+  ) {
+
+    const dataBase =
+      new Date(
+        manutencao.data
+      );
+
+    dataBase.setMonth(
+      dataBase.getMonth() +
+      Number(
+        manutencao.intervaloMeses
+      )
+    );
+
+    return dataBase;
+  }
+function calcularStatus(
     manutencao
   ) {
 
     if (
       manutencao.status ===
-      "encerrada"
+      "historico"
     ) {
 
       return {
-        cor: "#777",
-        texto:
-          "Finalizada"
+        cor: "#2196f3",
+        texto: "📁 Histórico"
       };
     }
 
-    const atual =
-      Number(
-        kmAtualVeiculo[
-          manutencao.veiculoId
-        ] || 0
+    const restanteKm =
+      calcularKmRestante(
+        manutencao
       );
 
-    const limiteKm =
-      manutencao.kmAtual +
-      manutencao.intervaloKm;
+    const dataVencimento =
+      calcularDataVencimento(
+        manutencao
+      );
 
-    const restante =
-      limiteKm - atual;
+    const hoje =
+      new Date();
 
-    if (restante <= 0) {
+    if (
+      hoje > dataVencimento
+    ) {
 
       return {
         cor: "red",
         texto:
-          `🔴 Vencido (${Math.abs(
-            restante
-          )} KM excedidos)`
+          "🔴 Vencida por data"
       };
     }
 
-    if (restante <= 1000) {
+    if (
+      restanteKm <= 0
+    ) {
+
+      return {
+        cor: "red",
+        texto:
+          `🔴 Vencido há ${Math.abs(
+            restanteKm
+          )} KM`
+      };
+    }
+
+    if (
+      restanteKm <= 1000
+    ) {
 
       return {
         cor: "#ff9800",
         texto:
-          `🟡 Faltam ${restante} KM`
+          `🟡 Faltam ${restanteKm} KM`
       };
     }
 
     return {
       cor: "green",
       texto:
-        `🟢 OK (${restante} KM restantes)`
+        `🟢 OK (${restanteKm} KM restantes)`
     };
   }
 
@@ -283,7 +331,141 @@ export default function Manutencoes() {
       manutencao
     );
 
-    setModalVisualizar(true);
+    setModalVer(true);
+  }
+
+  function abrirEditar(
+    manutencao
+  ) {
+
+    setVeiculoId(
+      manutencao.veiculoId
+    );
+
+    setTipo(
+      manutencao.tipo
+    );
+
+    setData(
+      manutencao.data
+    );
+
+    setKmAtual(
+      manutencao.kmAtual
+    );
+
+    setIntervaloKm(
+      manutencao.intervaloKm
+    );
+
+    setIntervaloMeses(
+      manutencao.intervaloMeses
+    );
+
+    setObservacao(
+      manutencao.observacao
+    );
+
+    setEditandoId(
+      manutencao.id
+    );
+
+    setModalEditar(
+      true
+    );
+  }
+
+  async function salvarEdicao(
+    e
+  ) {
+
+    e.preventDefault();
+
+    try {
+
+      const ref =
+        doc(
+          db,
+          "manutencoes",
+          editandoId
+        );
+
+      await updateDoc(
+        ref,
+        {
+          veiculoId,
+          tipo,
+          data,
+          kmAtual:
+            Number(kmAtual),
+          intervaloKm:
+            Number(intervaloKm),
+          intervaloMeses:
+            Number(
+              intervaloMeses
+            ),
+          observacao
+        }
+      );
+
+      alert(
+        "Manutenção atualizada"
+      );
+
+      limparFormulario();
+
+      carregarManutencoes();
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(error.message);
+    }
+  }
+
+  async function finalizarManutencao(
+    id
+  ) {
+
+    try {
+
+      const ref =
+        doc(
+          db,
+          "manutencoes",
+          id
+        );
+
+      await updateDoc(
+        ref,
+        {
+          status:
+            "historico"
+        }
+      );
+
+      alert(
+        "Manutenção movida para histórico"
+      );
+
+      carregarManutencoes();
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(error.message);
+    }
+  }
+
+  function formatarData(
+    data
+  ) {
+
+    return data.toLocaleDateString(
+      "pt-BR"
+    );
   }
 
   return (
@@ -293,60 +475,548 @@ export default function Manutencoes() {
       <Menu />
 
       <div className="page">
+{user.perfil === "administrador" && (
 
-        {user.perfil ===
-          "administrador" && (
+<div className="card">
 
-          <div className="card">
+<h1>Manutenções</h1>
 
-            <h1>
-              Manutenções
-            </h1>
+<br />
+
+<form
+className="form-padrao"
+onSubmit={
+editandoId
+? salvarEdicao
+: cadastrarManutencao
+}
+>
+
+<select
+value={veiculoId}
+onChange={(e)=>
+setVeiculoId(
+e.target.value
+)}
+required
+>
+
+<option value="">
+Selecione o Veículo
+</option>
+
+{veiculos.map(
+(veiculo)=>(
+<option
+key={veiculo.id}
+value={veiculo.id}
+>
+
+{veiculo.marca}
+{" - "}
+{veiculo.modelo}
+{" - "}
+{veiculo.placa}
+
+</option>
+)
+)}
+
+</select>
+
+<input
+type="text"
+placeholder="Tipo da manutenção"
+value={tipo}
+onChange={(e)=>
+setTipo(
+e.target.value
+)}
+required
+/>
+
+<input
+type="date"
+value={data}
+onChange={(e)=>
+setData(
+e.target.value
+)}
+required
+/>
+
+<input
+type="number"
+placeholder="KM da manutenção"
+value={kmAtual}
+onChange={(e)=>
+setKmAtual(
+e.target.value
+)}
+required
+/>
+
+<input
+type="number"
+placeholder="Intervalo KM"
+value={intervaloKm}
+onChange={(e)=>
+setIntervaloKm(
+e.target.value
+)}
+required
+/>
+
+<input
+type="number"
+placeholder="Intervalo em meses"
+value={intervaloMeses}
+onChange={(e)=>
+setIntervaloMeses(
+e.target.value
+)}
+required
+/>
+
+<input
+type="text"
+placeholder="Observação"
+value={observacao}
+onChange={(e)=>
+setObservacao(
+e.target.value
+)}
+/>
+
+<button
+type="submit"
+>
+
+{editandoId
+? "Salvar Alterações"
+: "Cadastrar"}
+
+</button>
+
+{editandoId && (
+
+<button
+type="button"
+onClick={
+limparFormulario
+}
+>
+
+Cancelar
+
+</button>
+
+)}
+
+</form>
+
+</div>
+
+)}
+
+<br />
+
+<div className="manutencoes-grid">
+
+{manutencoes.map(
+(manutencao)=>{
+
+const veiculo =
+obterVeiculo(
+manutencao.veiculoId
+);
+
+const status =
+calcularStatus(
+manutencao
+);
+
+const proximaTroca =
+calcularProximaTroca(
+manutencao
+);
+
+const restanteKm =
+calcularKmRestante(
+manutencao
+);
+
+const vencimento =
+calcularDataVencimento(
+manutencao
+);
+
+return(
+
+<div
+key={manutencao.id}
+className="manutencao-card"
+>
+
+<h2>
+
+{veiculo?.marca}
+{" "}
+{veiculo?.modelo}
+
+</h2>
+
+<p>
+
+<strong>
+Manutenção:
+</strong>
+
+{" "}
+
+{manutencao.tipo}
+
+</p>
+
+<p>
+
+<strong>
+Data:
+</strong>
+
+{" "}
+
+{manutencao.data}
+
+</p>
+
+<p>
+
+<strong>
+KM realizado:
+</strong>
+
+{" "}
+
+{manutencao.kmAtual}
+
+</p>
+
+<p>
+
+<strong>
+Próxima troca:
+</strong>
+
+{" "}
+
+{proximaTroca}
+{" KM"}
+
+</p>
+
+<p>
+
+<strong>
+Vencimento:
+</strong>
+
+{" "}
+
+{formatarData(
+vencimento
+)}
+
+</p>
+
+<input
+type="number"
+placeholder="Digite KM atual"
+value={
+kmConsulta[
+manutencao.id
+] || ""
+}
+onChange={(e)=>
+setKmConsulta({
+
+...kmConsulta,
+
+[manutencao.id]:
+e.target.value
+
+})
+}
+/>
+
+<br />
+<br />
+
+<p>
+
+<strong>
+Restante:
+</strong>
+
+{" "}
+
+{restanteKm > 0
+? `${restanteKm} KM`
+: `Vencido ${Math.abs(restanteKm)} KM`
+}
+
+</p>
+
+<div
+style={{
+color:
+status.cor,
+fontWeight:
+"bold"
+}}
+>
+
+{status.texto}
+
+</div>
+
+<br />
+
+<div
+className="acoes-card"
+>
+
+<button
+onClick={()=>
+abrirVisualizacao(
+manutencao
+)
+}
+>
+
+Ver
+
+</button>
+
+{user.perfil ===
+"administrador" && (
+
+<button
+onClick={()=>
+abrirEditar(
+manutencao
+)
+}
+>
+
+Editar
+
+</button>
+
+)}
+
+{user.perfil ===
+"administrador" &&
+
+manutencao.status !==
+"historico" && (
+
+<button
+onClick={()=>
+finalizarManutencao(
+manutencao.id
+)
+}
+>
+
+Finalizar
+
+</button>
+
+)}
+
+</div>
+
+</div>
+
+);
+
+})}
+
+</div>
+</div>
+
+      {modalVer && (
+
+        <div className="modal-overlay">
+
+          <div className="modal">
+
+            <h2>
+              Detalhes da Manutenção
+            </h2>
+
+            <br />
+
+            <p>
+              <strong>Tipo:</strong>
+              {" "}
+              {manutencaoSelecionada?.tipo}
+            </p>
+
+            <p>
+              <strong>Data:</strong>
+              {" "}
+              {manutencaoSelecionada?.data}
+            </p>
+
+            <p>
+              <strong>KM da Manutenção:</strong>
+              {" "}
+              {manutencaoSelecionada?.kmAtual}
+            </p>
+
+            <p>
+              <strong>Intervalo KM:</strong>
+              {" "}
+              {manutencaoSelecionada?.intervaloKm}
+            </p>
+
+            <p>
+              <strong>Intervalo Meses:</strong>
+              {" "}
+              {manutencaoSelecionada?.intervaloMeses}
+            </p>
+
+            <p>
+              <strong>Próxima Troca:</strong>
+              {" "}
+              {calcularProximaTroca(
+                manutencaoSelecionada
+              )}
+              {" KM"}
+            </p>
+
+            <p>
+              <strong>Observação:</strong>
+              {" "}
+              {manutencaoSelecionada?.observacao}
+            </p>
+
+            <br />
+
+            <div className="modal-buttons">
+
+              <button
+                onClick={() =>
+                  window.print()
+                }
+              >
+                Imprimir
+              </button>
+
+              <button
+                onClick={() => {
+
+                  const texto = `
+MANUTENÇÃO
+
+Tipo:
+${manutencaoSelecionada?.tipo}
+
+Data:
+${manutencaoSelecionada?.data}
+
+KM:
+${manutencaoSelecionada?.kmAtual}
+
+Próxima Troca:
+${calcularProximaTroca(
+  manutencaoSelecionada
+)} KM
+
+Observação:
+${manutencaoSelecionada?.observacao}
+`;
+
+                  window.open(
+                    `https://wa.me/?text=${encodeURIComponent(texto)}`
+                  );
+
+                }}
+              >
+                WhatsApp
+              </button>
+
+              <button
+                onClick={() => {
+
+                  const assunto =
+                    "Detalhes da Manutenção";
+
+                  const body = `
+Tipo:
+${manutencaoSelecionada?.tipo}
+
+Data:
+${manutencaoSelecionada?.data}
+
+KM:
+${manutencaoSelecionada?.kmAtual}
+
+Próxima Troca:
+${calcularProximaTroca(
+  manutencaoSelecionada
+)} KM
+
+Observação:
+${manutencaoSelecionada?.observacao}
+`;
+
+                  window.location.href =
+                    `mailto:?subject=${assunto}&body=${encodeURIComponent(body)}`;
+
+                }}
+              >
+                E-mail
+              </button>
+
+              <button
+                onClick={() =>
+                  setModalVer(false)
+                }
+              >
+                Fechar
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
+
+      {modalEditar && (
+
+        <div className="modal-overlay">
+
+          <div className="modal">
+
+            <h2>
+              Editar Manutenção
+            </h2>
 
             <br />
 
             <form
-              className="form-padrao"
               onSubmit={
-                cadastrarManutencao
+                salvarEdicao
               }
             >
 
-              <select
-                value={veiculoId}
-                onChange={(e) =>
-                  setVeiculoId(
-                    e.target.value
-                  )
-                }
-                required
-              >
-
-                <option value="">
-                  Selecione Veículo
-                </option>
-
-                {veiculos.map(
-                  (veiculo) => (
-
-                  <option
-                    key={veiculo.id}
-                    value={veiculo.id}
-                  >
-
-                    {veiculo.marca}
-                    {" - "}
-                    {veiculo.modelo}
-
-                  </option>
-
-                ))}
-
-              </select>
-
               <input
                 type="text"
-                placeholder="Tipo"
                 value={tipo}
                 onChange={(e) =>
                   setTipo(
@@ -369,7 +1039,6 @@ export default function Manutencoes() {
 
               <input
                 type="number"
-                placeholder="KM"
                 value={kmAtual}
                 onChange={(e) =>
                   setKmAtual(
@@ -381,7 +1050,6 @@ export default function Manutencoes() {
 
               <input
                 type="number"
-                placeholder="Intervalo KM"
                 value={intervaloKm}
                 onChange={(e) =>
                   setIntervaloKm(
@@ -393,10 +1061,7 @@ export default function Manutencoes() {
 
               <input
                 type="number"
-                placeholder="Intervalo Meses"
-                value={
-                  intervaloMeses
-                }
+                value={intervaloMeses}
                 onChange={(e) =>
                   setIntervaloMeses(
                     e.target.value
@@ -407,7 +1072,6 @@ export default function Manutencoes() {
 
               <input
                 type="text"
-                placeholder="Observação"
                 value={observacao}
                 onChange={(e) =>
                   setObservacao(
@@ -416,226 +1080,28 @@ export default function Manutencoes() {
                 }
               />
 
-              <button type="submit">
-
-                Cadastrar
-
-              </button>
-
-            </form>
-
-          </div>
-
-        )}
-
-        <br />
-
-        <div className="manutencoes-grid">
-
-          {manutencoes.map(
-            (manutencao) => {
-
-            const veiculo =
-              obterVeiculo(
-                manutencao.veiculoId
-              );
-
-            return (
-
               <div
-                className="manutencao-card"
-                key={manutencao.id}
+                className="modal-buttons"
               >
 
-                <h2>
-
-                  {veiculo?.marca}
-                  {" "}
-                  {veiculo?.modelo}
-
-                </h2>
-
-                <p>
-
-                  <strong>
-                    Tipo:
-                  </strong>
-
-                  {" "}
-                  {manutencao.tipo}
-
-                </p>
-
-                <p>
-
-                  <strong>
-                    Data:
-                  </strong>
-
-                  {" "}
-                  {manutencao.data}
-
-                </p>
-
-                <p>
-
-                  <strong>
-                    Próxima troca:
-                  </strong>
-
-                  {" "}
-
-                  {manutencao.kmAtual +
-                    manutencao.intervaloKm}
-
-                  {" KM"}
-
-                </p>
-
-                <input
-                  type="number"
-                  placeholder="KM Atual"
-                  value={
-                    kmAtualVeiculo[
-                      manutencao.veiculoId
-                    ] || ""
-                  }
-                  onChange={(e) =>
-                    setKmAtualVeiculo({
-                      ...kmAtualVeiculo,
-
-                      [manutencao.veiculoId]:
-                        e.target.value
-                    })
-                  }
-                />
-
-                <div
-                  style={{
-                    marginTop: 10,
-                    color:
-                      calcularStatus(
-                        manutencao
-                      ).cor,
-                    fontWeight:
-                      "bold"
-                  }}
+                <button
+                  type="submit"
                 >
+                  Salvar
+                </button>
 
-                  {
-                    calcularStatus(
-                      manutencao
-                    ).texto
+                <button
+                  type="button"
+                  onClick={
+                    limparFormulario
                   }
-
-                </div>
-
-                <div className="acoes-card">
-
-                  <button
-                    onClick={() =>
-                      abrirVisualizacao(
-                        manutencao
-                      )
-                    }
-                  >
-                    Ver
-                  </button>
-
-                  {user.perfil ===
-                    "administrador" &&
-
-                    manutencao.status ===
-                      "ativa" && (
-
-                    <button
-                      onClick={() =>
-                        finalizarManutencao(
-                          manutencao.id
-                        )
-                      }
-                    >
-                      Finalizar
-                    </button>
-
-                  )}
-
-                </div>
+                >
+                  Cancelar
+                </button>
 
               </div>
 
-            );
-          })}
-
-        </div>
-
-      </div>
-
-      {modalVisualizar && (
-
-        <div className="modal-overlay">
-
-          <div className="modal">
-
-            <h2>
-              Detalhes
-            </h2>
-
-            <br />
-
-            <p>
-
-              <strong>
-                Tipo:
-              </strong>
-
-              {" "}
-
-              {
-                manutencaoSelecionada?.tipo
-              }
-
-            </p>
-
-            <br />
-
-            <p>
-
-              <strong>
-                Observação:
-              </strong>
-
-              {" "}
-
-              {
-                manutencaoSelecionada?.observacao
-              }
-
-            </p>
-
-            <br />
-
-            <div className="modal-buttons">
-
-              <button
-                onClick={() =>
-                  window.print()
-                }
-              >
-                Imprimir
-              </button>
-
-              <button
-                onClick={() =>
-                  setModalVisualizar(
-                    false
-                  )
-                }
-              >
-                Fechar
-              </button>
-
-            </div>
+            </form>
 
           </div>
 
@@ -644,5 +1110,7 @@ export default function Manutencoes() {
       )}
 
     </div>
+
   );
+
 }
