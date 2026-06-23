@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Menu from "../components/Menu";
 import {
@@ -11,6 +12,7 @@ import { db } from "../firebase";
 
 export default function Manutencoes() {
   const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate(); // <-- Adicionado aqui
 
   const [veiculos, setVeiculos] = useState([]);
   const [manutencoes, setManutencoes] = useState([]);
@@ -119,12 +121,19 @@ export default function Manutencoes() {
     }
   }
 
+  // NOVA FUNÇÃO SUBSTITUÍDA AQUI
   async function finalizarManutencao(id) {
     try {
       const manutencaoRef = doc(db, "manutencoes", id);
-      await updateDoc(manutencaoRef, { status: "encerrada" });
-      alert("Manutenção finalizada");
-      carregarManutencoes();
+
+      await updateDoc(manutencaoRef, {
+        status: "encerrada"
+      });
+
+      alert("Manutenção finalizada com sucesso");
+
+      navigate("/manutencoesEncerradas");
+
     } catch (error) {
       console.log(error);
       alert(error.message);
@@ -152,7 +161,6 @@ export default function Manutencoes() {
     return Number(manutencao.kmAtual) + Number(manutencao.intervaloKm);
   }
 
-  // NOVA FUNÇÃO ENVIADA POR VOCÊ
   function calcularKmRestante(manutencao) {
     const kmAtualVeiculo = Number(kmConsulta[manutencao.id] || 0);
     const proximaTroca = Number(manutencao.kmAtual) + Number(manutencao.intervaloKm);
@@ -296,7 +304,6 @@ export default function Manutencoes() {
 
                 <br />
 
-                {/* PLACEHOLDER ATUALIZADO AQUI */}
                 <input
                   type="number"
                   placeholder="KM atual do veículo"
